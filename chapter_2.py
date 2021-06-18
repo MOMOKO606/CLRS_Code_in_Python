@@ -389,9 +389,70 @@ def poly_equa_beta(x):
     #  When you return a function, don't write () after the function name.
     return para_of
 
+
+"""
+The brute force algorithm for computing inversion, O(n ^ 2).
+Input @para: list A.
+Output: number of inversions in list A.
+"""
+def inversion_naive( A ):
+    n = len(A)
+    count = 0
+    for i in range( n - 1 ):
+        for j in range( i + 1, n ):
+            if A[i] > A[j]:
+                count = count + 1
+    return count
+    #  A Pythonic way of the function.
+    # return( len( ["inversion" for i in range(len(A) - 1) for j in range(i + 1, len(A)) if A[i] > A[j]] ) )
+
+
+"""
+The recursive algorithm for computing inversion, O(nlgn).
+Input @para: list A, its indices low & high. A[ low, ..., high].
+Output: number of inversions in list A.
+list A would be sorted after this function.
+"""
+def inversion_recur( A, low, high ):
+
+    """
+    The merge function with sentinels used in mergesort, also counts the number of inversions.
+    Input @param: list A, index low, mid and high to form A[low,..., mid] & A[mid + 1,..., high].
+    Output: the number of inversions between A[low,..., mid] & A[mid + 1,..., high].
+    Also sorts A[low,..., high].
+    """
+    def mergeInversion( A, low, mid, high ):
+
+        #  Construct L and R lists.
+        L = [ A[i] for i in range( low, mid + 1 ) ]
+        R = [ A[i] for i in range( mid + 1, high + 1 )]
+        L.append( float("inf") )
+        R.append( float("inf") )
+
+        #  Merge two sublists and compute inversions between them.
+        i = j = 0
+        count = 0
+        for k in range(low, high + 1):
+            if L[i] < R[j]:
+                A[k] = L[i]
+                i = i + 1
+            else:
+                A[k] = R[j]
+                j = j + 1
+                count = count + (mid - low + 1) - i
+        return count
+
+    #  Base case
+    if low >= high:
+        return 0
+    mid = (low + high) // 2
+    return inversion_recur(A, low, mid ) + inversion_recur(A, mid + 1, high) + mergeInversion( A, low, mid, high )
+
+
 if __name__ == '__main__':
     A = [5, 9, 8, 2, 13, 4, 6, 7, 10, 1, 3, 0, 11, 12]
     A1 = [0, 1, 2, 3]
+    A2 = [2, 3, 8, 6, 1]
     binaryX = [1, 1, 1]
     binaryY = [1]
 
@@ -438,3 +499,7 @@ if __name__ == '__main__':
     #  A more Pythonic way with closure of Horner's rule.
     polynomial_equation = poly_equa_beta(2)  # Set x = 2.
     print( "A more Pythonic way with closure of Horner's rule:", reduce( polynomial_equation, A1[-1:: -1] ), '\n' )
+
+    #  Test for inversion computing in P42.
+    print("Naive inversion computing:", inversion_naive( A2 ))
+    print("Recursive inversion computing:", inversion_recur( A2, 0, len( A2 ) - 1 ))
