@@ -103,7 +103,7 @@ the following observation: a maximum subarray of A[1.. j + 1] is either a maximu
 a subarray A[i .. j +1] , for some 1 <= i<= j + 1. 
 Determine a maximum subarray of the form A[i... j+1] in constant time based on knowing a maximum subarray ending at index j.
 
-* This algorithm works for a positive sum value of subarray.
+* Your array must have at least one positive number.
 
 The idea is, a maximum sub-array should be positive. Therefore, if our sum is negative, it is meaningless to consider it 
 as a part of the maximum sub-array.
