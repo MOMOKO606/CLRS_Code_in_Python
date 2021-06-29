@@ -94,14 +94,72 @@ def find_maxsubarray_recur( A, low, high ):
         return [right_value, right_start, right_end]
 
 
+"""
+4.1-5  -- Kadane's algorithm
+Use the following ideas to develop a nonrecursive, linear-time algorithm for the maximum-subarray problem. 
+Start at the left end of the array, and progress toward the right, keeping track of the maximum subarray seen so far. 
+Knowing a maximum subarray of A[1.. j] , extend the answer to ﬁnd a maximum subarray ending at index j + 1 by using 
+the following observation: a maximum subarray of A[1.. j + 1] is either a maximum subarray of A[1.. j] or 
+a subarray A[i .. j +1] , for some 1 <= i<= j + 1. 
+Determine a maximum subarray of the form A[i... j+1] in constant time based on knowing a maximum subarray ending at index j.
+
+* This algorithm works for a positive sum value of subarray.
+
+The idea is, a maximum sub-array should be positive. Therefore, if our sum is negative, it is meaningless to consider it 
+as a part of the maximum sub-array.
+
+So, we determine i by negative or positive of the sum. 
+First we need to figure out the maximum sub array ending at index j + 1 which could be just A[j + 1] or the maximum subarray in 
+A[1.. j] , therefore we find the max of this two.
+
+Input @para: list A.
+Output @para:
+max_sum = The sum value of the maximum contiguous subarray in A;
+left_index = the start index of the maximum contiguous subarray;
+right_index = the end index of the maximum contiguous subarray.
+"""
+def find_maxsubarray_liner( A ):
+
+    #  Initialize
+    max_sum = float("-inf")
+    curr_sum = 0
+    left_index = 0
+    right_index = 0
+
+    #  looking through the array
+    for i in range(len(A)):
+        curr_sum += A[i]
+
+        #  Determine the right_index of the max sub-array.
+        if curr_sum > max_sum:
+            max_sum = curr_sum
+            right_index = i
+
+        #  Determine the left_index of the max sub-array.
+        if curr_sum < 0:
+            curr_sum = 0
+            #  if A[i] is not the last element, we can moving it to the right.
+            if i != len(A) - 1:
+                left_index = i + 1
+
+    return [max_sum, left_index, right_index]
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
     A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
+    A2 = [-3, 13, 7, 28, -28, 4, 3, 2, 40]
 
-    #  Test for the brute-force solution of finding the maximum contiguous subarray in P69.
+    #  Test for the brute-force solution of finding the maximum contiguous subarray in P69 & P74 4.1-2.
     print("Test for the naive algorithm of max subarray in P69:", max_subarray_naive( A ) )
     #  Test for the recursive algo of finding the maximum contiguous subarray in P72.
-    print("Test for the recursive algorithm of max subarray in P72:", find_maxsubarray_recur( A, 0, len(A) - 1 ), '\n')
-
+    print("Test for the recursive algorithm of max subarray in P72:", find_maxsubarray_recur( A, 0, len(A) - 1 ))
+    #  Test for the liner algo of finding the maximum contiguous subarray in P75.
+    print("Test for the linear algorithm of max subarray in P75:", find_maxsubarray_liner( A2 ))
+    print("Test for the linear algorithm of max subarray in P75:", find_maxsubarray_liner( A ), '\n')
 
