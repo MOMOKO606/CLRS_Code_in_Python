@@ -1,0 +1,107 @@
+"""
+The brute-force algorithm for finding the maximum contiguous subarray.
+Input @para: list A.
+Output @para:
+max = The sum value of the maximum contiguous subarray in A;
+left_index = the start index of the maximum contiguous subarray;
+right_index = the end index of the maximum contiguous subarray.
+"""
+def max_subarray_naive( A ):
+    n = len( A )
+    max = float("-inf")
+
+    #  i determines the left_index.
+    for i in range( n ):
+        sum = 0
+        #  j determines the right_index.
+        for j in range( i, n - 2 ):
+            sum = sum + A[j]
+            if sum >= max:
+                max = sum
+                left_index = i
+                right_index = j
+    return max, left_index, right_index
+
+
+"""
+The function used in the "find_maxsubarray_recur" to get the maximum contiguous subarray crossing left and right parts.
+The 'crossing part' must have A[mid] & A[mid + 1] at least.
+
+Input @para: list A[low, ..., mid,..., high].
+Output @para: [value, start, end]
+value = The sum value of the maximum contiguous subarray in A[..., mid, mid + 1, ...];
+start = the start index of the maximum contiguous subarray;
+end = the end index of the maximum contiguous subarray.
+"""
+def getcross_maxsubarray( A, low, mid, high ):
+
+    left_sum = float("-inf")
+    sum = 0
+    for i in range( mid, low - 1, -1 ):
+        sum = sum + A[i]
+        if sum > left_sum:
+            left_sum = sum
+            left_index = i
+
+    right_sum = float("-inf")
+    sum = 0
+    for j in range( mid + 1, high + 1):
+        sum = sum + A[j]
+        if sum > right_sum:
+            right_sum = sum
+            right_index = j
+
+    return [left_sum + right_sum, left_index, right_index]
+
+
+"""
+The recursive algorithm for finding the maximum contiguous subarray.
+The idea is, divide A[low, ..., high] into A[low, ..., mid] and A[mid + 1, ..., high], so the maximum contiguous subarray
+is either in the left part, right part, or crossing both parts. 
+So we recursively get the maximum contiguous subarray in both parts, and get max subarray from crossing part 
+through function getcross_maxsubarray, then compare them to find the largest one.
+
+Input @para: list A[low, ..., high].
+Output @para: [value, start, end]
+value = The sum value of the maximum contiguous subarray in A[low, ..., high];
+start = the start index of the maximum contiguous subarray;
+end = the end index of the maximum contiguous subarray.
+"""
+def find_maxsubarray_recur( A, low, high ):
+
+    #  Base case, only one element.
+    if low == high:
+        return [A[low], low, high]
+
+    mid = ( low + high ) // 2
+
+    #  Find the max subarray in the left part.
+    [left_value, left_start, left_end] = find_maxsubarray_recur( A, low, mid )
+    #  Find the max subarray in the right part.
+    [right_value, right_start, right_end] = find_maxsubarray_recur( A, mid + 1, high )
+    #  Find the max subarray in the crossing part.
+    [cross_value, cross_start, cross_end] = getcross_maxsubarray( A, low, mid, high )
+
+    #  Compare those max subarrays above.
+    if left_value >= right_value and left_value >= cross_value:
+        #  The max subarray in the left part is the largest.
+        return [left_value, left_start, left_end]
+    elif cross_value >= right_value and cross_value >= left_value:
+        #  The max subarray in the crossing part is the largest.
+        return [cross_value, cross_start, cross_end]
+    else:
+        #  The max subarray in the right part is the largest.
+        return [right_value, right_start, right_end]
+
+
+
+
+if __name__ == '__main__':
+    A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
+
+    #  Test for the brute-force solution of finding the maximum contiguous subarray in P69.
+    print("Test for the naive algorithm of max subarray in P69:", max_subarray_naive( A ) )
+    #  Test for the recursive algo of finding the maximum contiguous subarray in P72.
+    print("Test for the recursive algorithm of max subarray in P72:", find_maxsubarray_recur( A, 0, len(A) - 1 ), '\n')
+
+
