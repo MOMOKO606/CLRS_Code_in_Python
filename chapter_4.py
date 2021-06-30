@@ -134,6 +134,9 @@ Now we know what the (potential) starting point of a maximum subarray looks like
 it’s a value that is greater than the sum all previous elements. That is what
         current_sum = max(x, current_sum + x) 
 does. It compares starting at x, with starting someplace in the past and including all the elements from that point forward. 
+
+* The original idea is somehow a little bit different from the recurrence above.
+but the recurrence is more reasonable than the 'moving left-index condition' in the original idea.
 """
 def find_maxsubarray_liner( A ):
 
