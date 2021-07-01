@@ -22,7 +22,7 @@ Let's think deeper, 我们关注从右向左，关注每个包括A[ j ]的sub-ar
 
 包括A[ j ]的max sub-array = 包含A[ j - 1 ]的max sub-array + A[ j ] 或者 A[ j ]自己。
 
-![](.It's all about algorithms notes!_images/509faf57.png)
+![](https://raw.githubusercontent.com/MOMOKO606/Pic-Library/master/kadanes-algo.jpg)
 
 Why？可以理解为当包含A[ j - 1 ]的max sub-array对A[j]是负增益时，那我就还不如不要这段负增益，此时，包括j元素的max sub-array就是A[ j ].所以当你从右向左遍历时，这也是确定i的方法。
 
