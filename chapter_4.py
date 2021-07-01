@@ -102,6 +102,8 @@ Output @para:
 max_sum = The sum value of the maximum contiguous subarray in A;
 left_index = the start index of the maximum contiguous subarray;
 right_index = the end index of the maximum contiguous subarray.
+
+To see details: 
 """
 def maxsubarray_kadane_ori( A ):
 
