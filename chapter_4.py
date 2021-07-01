@@ -95,7 +95,8 @@ def find_maxsubarray_recur( A, low, high ):
 
 
 """
-4.1-5  -- Kadane's algorithm
+4.1-5  --the original Kadane's algorithm
+*  The original requirement for Kadane's algorithm is that Your array must have at least one positive number.
 
 Input @para: list A.
 Output @para:
@@ -132,7 +133,110 @@ def maxsubarray_kadane_ori( A ):
     return [max_sum, left_index, right_index]
 
 
+"""
+The recursive Kadane's algorithm
+The function aims to output the value, left-end of the max sub-array which must contains A[j].
 
+Input @para: list A, index j, max sub-array tracker. The tracker is used to track the max sub-array throughout the whole array.
+Output @para:
+max_sum = The sum value of the maximum contiguous subarray in A which must have A[j];
+left_index = the left-end index of the maximum contiguous subarray in A which must have A[j].
+[max subarray's value, max subarray's left-end, max subarrya's right-end] is a tracker which keeps tracking the max subarray of the whole array.
+"""
+def maxsubarray_kadane_recur(A, j):
+
+    #  Base case, initialize the tracker.
+    if j == 0:
+        max_tracker = 0
+        return A[0], 0, [max_tracker, 0, 0]
+
+    #  Recursive step
+    [max_previous, i, [max_tracker, max_left, max_right]] = maxsubarray_kadane_recur(A, j - 1)
+    tmp = max_previous + A[j]
+
+    #  Check the new max sub-array, case 1
+    if tmp <= A[j]:
+
+        #  Update the tracker.
+        if A[j] >= max_tracker:
+            max_tracker = A[j]
+            max_left = max_right = j
+        return A[j], j, [max_tracker, max_left, max_right]
+
+    else:  # case 2
+
+        #  Update the tracker.
+        if tmp >= max_tracker:
+            max_tracker = tmp
+            max_left = i
+            max_right = j
+        return tmp, i, [max_tracker, max_left, max_right]
+
+
+def maxsubarray_kadane( A ):
+
+    #  Initialize ans as ans[i] represents the value of max sub-array that must contains A[i].
+    #  left & right = left & right indices of the max sub-array that must contains A[i] for each i.
+    ans = A[:]
+    left = 0
+    right = 0
+
+    #  Initialize the max sub-array tracker that keeps tracking the max sub-array through the whole A.
+    #  max_left & max_right = left & right indices of the max sub-array through the whole A.
+    max_value = ans[0]
+    max_left = 0
+    max_right = 0
+
+    for i in range( 1, len(A) ):
+
+        #  Update ans[i], left & right according to the recurrence.
+        if ans[i - 1] + ans[i] <= ans[i]:
+            left = right = i
+            ans[i] = ans[i]
+        else:
+            right = i
+            ans[i] = ans[i - 1] + ans[i]
+
+        #  Update the tracker.
+        if ans[i] >  max_value:
+            max_value = ans[i]
+            max_left = left
+            max_right = right
+
+    return max_value, max_left, max_right
+
+
+def minsubarray_kadane( A ):
+
+    #  Initialize ans as ans[i] represents the value of min sub-array that must contains A[i].
+    #  left & right = left & right indices of the min sub-array that must contains A[i] for each i.
+    ans = A[:]
+    left = 0
+    right = 0
+
+    #  Initialize the min sub-array tracker that keeps tracking the min sub-array through the whole A.
+    #  min_left & min_right = left & right indices of the min sub-array through the whole A.
+    min_value = ans[0]
+    min_left = 0
+    min_right = 0
+
+    for i in range( 1, len(A) ):
+
+        #  Update ans[i], left & right according to the recurrence.
+        if ans[i - 1] + ans[i] > ans[i]:
+            left = right = i
+            ans[i] = ans[i]
+        else:
+            right = i
+            ans[i] = ans[i - 1] + ans[i]
+
+        #  Update the tracker.
+        if ans[i] < min_value:
+            min_value = ans[i]
+            min_left = left
+            min_right = right
+
+    return min_value, min_left, min_right
 
 
 
@@ -141,12 +245,19 @@ def maxsubarray_kadane_ori( A ):
 if __name__ == '__main__':
     A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
     A2 = [-3, 13, 7, 28, -28, 4, 3, 2, 40]
+    A3 = [-15, -3, -1, -2]
 
     #  Test for the brute-force solution of finding the maximum contiguous subarray in P69 & P74 4.1-2.
     print("Test for the naive algorithm of max subarray in P69:", max_subarray_naive( A ) )
+
     #  Test for the recursive algo of finding the maximum contiguous subarray in P72.
-    print("Test for the recursive algorithm of max subarray in P72:", find_maxsubarray_recur( A, 0, len(A) - 1 ))
-    #  Test for the liner algo of finding the maximum contiguous subarray in P75.
-    print("Test for the linear algorithm of max subarray in P75:", maxsubarray_kadane_ori( A2 ))
-    print("Test for the linear algorithm of max subarray in P75:", maxsubarray_kadane_ori( A ), '\n')
+    print("Test for the d & c algo of max subarray in P72:", find_maxsubarray_recur( A, 0, len(A) - 1 ))
+
+    #  Test for a series of kadane's algorithms in P75.
+    print("Test for the original kadane's algo in P75:", maxsubarray_kadane_ori( A2 ))
+    print("Test for the original kadane's algo in P75:", maxsubarray_kadane_ori( A ))
+    ans = maxsubarray_kadane_recur( A, len(A) - 1 )
+    print("Test for the recursive kadane's algo:", ans[2])
+    print("Test for the iterative kadane's algo:", maxsubarray_kadane( A3 ))
+    print("Test for the min version of kadane's algo:", minsubarray_kadane(A), '\n')
 
