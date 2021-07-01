@@ -96,49 +96,14 @@ def find_maxsubarray_recur( A, low, high ):
 
 """
 4.1-5  -- Kadane's algorithm
-Use the following ideas to develop a nonrecursive, linear-time algorithm for the maximum-subarray problem. 
-Start at the left end of the array, and progress toward the right, keeping track of the maximum subarray seen so far. 
-Knowing a maximum subarray of A[1.. j] , extend the answer to ﬁnd a maximum subarray ending at index j + 1 by using 
-the following observation: a maximum subarray of A[1.. j + 1] is either a maximum subarray of A[1.. j] or 
-a subarray A[i .. j +1] , for some 1 <= i<= j + 1. 
-Determine a maximum subarray of the form A[i... j+1] in constant time based on knowing a maximum subarray ending at index j.
-
-* Your array must have at least one positive number.
-
-The original idea is greedy, a maximum sub-array should be positive. 
-Therefore, if our sum is negative, it is meaningless to consider it as a part of the maximum sub-array.
-
-So, we determine i by negative or positive of the sum. 
-First we need to figure out the maximum sub array ending at index j + 1 which could be just A[j + 1] or the maximum subarray in 
-A[1.. j] , therefore we find the max of this two.
 
 Input @para: list A.
 Output @para:
 max_sum = The sum value of the maximum contiguous subarray in A;
 left_index = the start index of the maximum contiguous subarray;
 right_index = the end index of the maximum contiguous subarray.
-
-
-** To think deeper
-The brute force algo starts from the left end to the right end, check every sub-array that contains A[j],
-Kadane's algorithm  starts from the right end to the left end, check every sub-array that contains A[j].
-
-If A[i.. j] is the max sub-array, then we add A[i-1] nor A[j+1] would just make the sub-array smaller, no matter what direction.
-for example, if we have
-1000, -1, -2, …, more negative elements, …, -3, 1, 2000, …
-
-then the largest subarray will only start at 1000, if the sum of all the intermediate results is greater than -1000. 
-If the sum is < 1, we should start with 1.
-
-Now we know what the (potential) starting point of a maximum subarray looks like: 
-it’s a value that is greater than the sum all previous elements. That is what
-        current_sum = max(x, current_sum + x) 
-does. It compares starting at x, with starting someplace in the past and including all the elements from that point forward. 
-
-* The original idea is somehow a little bit different from the recurrence above.
-but the recurrence is more reasonable than the 'moving left-index condition' in the original idea.
 """
-def find_maxsubarray_liner( A ):
+def maxsubarray_kadane_ori( A ):
 
     #  Initialize
     max_sum = float("-inf")
@@ -180,6 +145,6 @@ if __name__ == '__main__':
     #  Test for the recursive algo of finding the maximum contiguous subarray in P72.
     print("Test for the recursive algorithm of max subarray in P72:", find_maxsubarray_recur( A, 0, len(A) - 1 ))
     #  Test for the liner algo of finding the maximum contiguous subarray in P75.
-    print("Test for the linear algorithm of max subarray in P75:", find_maxsubarray_liner( A2 ))
-    print("Test for the linear algorithm of max subarray in P75:", find_maxsubarray_liner( A ), '\n')
+    print("Test for the linear algorithm of max subarray in P75:", maxsubarray_kadane_ori( A2 ))
+    print("Test for the linear algorithm of max subarray in P75:", maxsubarray_kadane_ori( A ), '\n')
 
