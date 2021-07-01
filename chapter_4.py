@@ -103,7 +103,7 @@ max_sum = The sum value of the maximum contiguous subarray in A;
 left_index = the start index of the maximum contiguous subarray;
 right_index = the end index of the maximum contiguous subarray.
 
-
+See more details: https://github.com/MOMOKO606/CLRS_Code_in_Python/blob/main/Notes_Kadanes_algorithm.md
 """
 def maxsubarray_kadane_ori( A ):
 
