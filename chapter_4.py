@@ -1,3 +1,4 @@
+#----------------  Find the Maximum Sub-array ----------------------#
 """
 The brute-force algorithm for finding the maximum contiguous subarray.
 Input @para: list A.
@@ -173,6 +174,13 @@ def maxsubarray_kadane_recur(A, j):
         return tmp, i, [max_tracker, max_left, max_right]
 
 
+"""
+The iterative Kadane's algorithm.
+
+Input @para: list A.
+Output @para:
+[max subarray's value, max subarray's left-end, max subarrya's right-end] = the max subarray of the whole array and it's indices.
+"""
 def maxsubarray_kadane( A ):
 
     #  Initialize ans as ans[i] represents the value of max sub-array that must contains A[i].
@@ -206,6 +214,13 @@ def maxsubarray_kadane( A ):
     return max_value, max_left, max_right
 
 
+"""
+The iterative Kadane's algorithm, the min version.
+
+Input @para: list A.
+Output @para:
+[min subarray's value, min subarray's left-end, min subarrya's right-end] = the min subarray of the whole array and it's indices.
+"""
 def minsubarray_kadane( A ):
 
     #  Initialize ans as ans[i] represents the value of min sub-array that must contains A[i].
@@ -237,7 +252,137 @@ def minsubarray_kadane( A ):
             min_right = right
 
     return min_value, min_left, min_right
+#----------------End of Find the Maximum Sub-array ----------------------#
 
+
+#-----------------------  Matrix Multiplication ------------------------#
+"""
+The tradition point-to-point Matrix Multiplication method.
+NOTICE: The number of columns in A must equals to the number of rows in B.
+
+Input @para: Matrix A & B.
+Output: Matrix C = A * B.
+"""
+def matrix_multip_pt( A, B ):
+
+    #  Get the size of Matrix A.
+    row_a = len( A )
+    col_a = len( A[0] )
+
+    #  Get the size of Matrix B.
+    row_b = len( B )
+    col_b = len( B[0] )
+
+    #  Initialize the output matrix.
+    C = [[0] * col_b for i in range(row_a)]
+
+    #  Sentinel.
+    assert col_a == row_b, "The number of columns in A must equals to the number of rows in B."
+
+    #  The traditional method of multiply 2 matrices.
+    #  point-to-point
+    for i in range( row_a ):
+        for j in range( col_b ):
+            for k in range( col_a ):
+                C[i][j] += A[i][k] * B[k][j]
+    return C
+
+
+"""
+The tradition row  Matrix Multiplication method.
+NOTICE: The number of columns in A must equals to the number of rows in B.
+
+Input @para: Matrix A & B.
+Output: Matrix C = A * B.
+"""
+def matrix_multip_row( A, B ):
+
+    #  Get the size of Matrix A.
+    row_a = len( A )
+    col_a = len( A[0] )
+
+    #  Get the size of Matrix B.
+    row_b = len( B )
+    col_b = len( B[0] )
+
+    #  Initialize the  output matrix.
+    C = []
+
+    #  The traditional row method of multiply 2 matrices.
+    for i in range( row_a ):
+
+        #  Initialize the row in output matrix.
+        row = [0] * col_b
+
+        #  row vector * matrix B
+        for j in range( col_a ):
+            #  The factors (A[i][j]) * rows in Matrix B.
+            tmp = [ A[i][j] * B[j][k] for k in range(col_b) ]
+            #  Put the rows above together to form the rows in the result.
+            row = [row[k] + tmp[k] for k in range(col_b)]
+        #  Computed and added rows to the result.
+        C.append(row)
+
+    return C
+
+
+"""
+The tradition column Matrix Multiplication method.
+NOTICE: The number of columns in A must equals to the number of rows in B.
+
+Input @para: Matrix A & B.
+Output: Matrix res = A * B.
+"""
+def matrix_multip_col( A, B ):
+
+    #  Get the size of Matrix A.
+    row_a = len( A )
+    col_a = len( A[0] )
+
+    #  Get the size of Matrix B.
+    row_b = len( B )
+    col_b = len( B[0] )
+
+    #  Initialize the  output matrix.
+    C = []
+    res = []
+
+    #  The traditional column method of multiply 2 matrices.
+    for j in range(col_b):
+
+        #  Initialize the column in output matrix.
+        col = [0] * row_a
+
+        #  matrix A * column vector
+        for i in range(row_b):
+            #  The factors (B[i][j]) * columns in Matrix A.
+            tmp = [B[i][j] * A[k][i] for k in range(row_a)]
+            #  Put the columns above together to form the columns in the result.
+            col = [col[k] + tmp[k] for k in range(row_a)]
+        #  Computed and added columns to the result.
+        C.append(col)
+
+    #  Exchange rows and columns.
+    #  res is the transpose matrix of C.
+    for j in range(col_a):
+        tmp = [C[i][j] for i in range( col_b )]
+        res.append(tmp)
+
+    return res
+
+
+"""
+The divide-and-conquered Matrix Multiplication method.
+NOTICE: 
+The number of columns in A must equals to the number of rows in B.
+A & B both are n * n matrices, n is divisiable by 2. 
+
+Input @para: Matrix A & B.
+Output: Matrix res = A * B.
+"""
+def matrix_multip_recur( A, B ):
+    #  Base case, only one element.
+    pass
 
 
 
@@ -246,6 +391,8 @@ if __name__ == '__main__':
     A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
     A2 = [-3, 13, 7, 28, -28, 4, 3, 2, 40]
     A3 = [-15, -3, -1, -2]
+    A4 = [[0, 0, 5], [4, 2, 1], [0, -1, 2]]
+    B = [[1, 2, 4, -1], [5, 3, 1, 0], [0, 0, 2, 0]]
 
     #  Test for the brute-force solution of finding the maximum contiguous subarray in P69 & P74 4.1-2.
     print("Test for the naive algorithm of max subarray in P69:", max_subarray_naive( A ) )
@@ -261,3 +408,7 @@ if __name__ == '__main__':
     print("Test for the iterative kadane's algo:", maxsubarray_kadane( A3 ))
     print("Test for the min version of kadane's algo:", minsubarray_kadane(A), '\n')
 
+    #  Test for a series of Matrix multiplications in P75.
+    print("Test for the naive Matrix multiplication in P75:", matrix_multip_pt( A4, B ))
+    print("Test for the row Matrix multiplication in P75:", matrix_multip_row( A4, B ))
+    print("Test for the column Matrix multiplication in P75:", matrix_multip_col(A4, B))
