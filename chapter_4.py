@@ -1,3 +1,5 @@
+import numpy as np
+
 #----------------  Find the Maximum Sub-array ----------------------#
 """
 The brute-force algorithm for finding the maximum contiguous subarray.
@@ -373,18 +375,71 @@ def matrix_multip_col( A, B ):
 
 """
 The divide-and-conquered Matrix Multiplication method.
+
 NOTICE: 
 The number of columns in A must equals to the number of rows in B.
 A & B both are n * n matrices, n is divisiable by 2. 
+I feel like this is a terrible piece of code, lots of lines can be optimized, but I will leave it to the future.
 
 Input @para: Matrix A & B.
 Output: Matrix res = A * B.
 """
-def matrix_multip_recur( A, B ):
-    #  Base case, only one element.
-    pass
+def matrix_multip_recur( A, B, A_starti, A_endi, A_startj, A_endj, B_starti, B_endi, B_startj, B_endj ):
 
+    #  Base case#
+    #  only one element in A[A_starti ..A_endi][A_startj ..A_endj] & B[B_starti ..B_endi][B_startj ..B_endj]
+    if A_starti == A_endi:
+        ans1 = A[A_endi][A_endj]
+        ans2 = B[B_endi][B_endj]
+        ans3 = A[A_endi][A_endj] * B[B_endi][B_endj]
+        return A[A_endi][A_endj] * B[B_endi][B_endj]
 
+    A_midi = (A_starti + A_endi) // 2
+    A_midj = (A_startj + A_endj) // 2
+
+    B_midi = (B_starti + B_endi) // 2
+    B_midj = (B_startj + B_endj) // 2
+
+    C11_alpha = matrix_multip_recur(A, B, A_starti, A_midi, A_startj, A_midj, B_starti, B_midi, B_startj, B_midj)
+    C11_beta = matrix_multip_recur(A, B, A_starti, A_midi, A_midj + 1, A_endj, B_midi + 1, B_endi, B_startj, B_midj)
+
+    C12_alpha = matrix_multip_recur(A, B, A_starti, A_midi, A_startj, A_midj, B_starti, B_midi, B_midj + 1, B_endj)
+    C12_beta = matrix_multip_recur(A, B, A_starti, A_midi, A_midj + 1, A_endj, B_midi + 1, B_endi, B_midj + 1, B_endj)
+
+    C21_alpha = matrix_multip_recur(A, B, A_midi + 1, A_endi, A_startj, A_midj, B_starti, B_midi, B_startj, B_midj)
+    C21_beta = matrix_multip_recur(A, B, A_midi + 1, A_endi, A_midj + 1, A_endj,  B_midi + 1, B_endi, B_startj, B_midj)
+
+    C22_alpha = matrix_multip_recur(A, B, A_midi + 1, A_endi, A_startj, A_midj, B_starti, B_midi, B_midj + 1, B_endj)
+    C22_beta = matrix_multip_recur(A, B, A_midi + 1, A_endi, A_midj + 1, A_endj, B_midi + 1, B_endi, B_midj + 1, B_endj)
+
+    #  Computing C11, C12, C21, C22.
+    C11_alpha = np.array( C11_alpha )
+    C11_beta = np.array( C11_beta )
+    C11 = C11_alpha + C11_beta
+
+    C12_alpha = np.array( C12_alpha )
+    C12_beta = np.array( C12_beta )
+    C12 = C12_alpha + C12_beta
+
+    C21_alpha = np.array( C21_alpha )
+    C21_beta = np.array( C21_beta )
+    C21 = C21_alpha + C21_beta
+
+    C22_alpha = np.array( C22_alpha )
+    C22_beta = np.array( C22_beta )
+    C22 = C22_alpha + C22_beta
+
+    #  Connecting C11, C12, C21, C22 from left to right, upper to bottom.
+    try:
+        C_upper = np.concatenate((C11, C12), axis = 1)
+        C_lower = np.concatenate((C21, C22), axis = 1)
+    except:
+        C_upper = np.array( [C11.tolist()] + [C12.tolist()] )
+        C_lower = np.array( [C21.tolist()] + [C22.tolist()] )
+
+    #  np.concatenate((C_upper, C_lower), axis = 0) doesn't work, I don't know why.
+    #  Remember to transform back into list, since the input parameters of the function accept list only.
+    return np.vstack((C_upper, C_lower)).tolist()
 
 
 if __name__ == '__main__':
@@ -392,7 +447,10 @@ if __name__ == '__main__':
     A2 = [-3, 13, 7, 28, -28, 4, 3, 2, 40]
     A3 = [-15, -3, -1, -2]
     A4 = [[0, 0, 5], [4, 2, 1], [0, -1, 2]]
+    A5 = [[2, 3, 6, 0], [1, 7, 1, 3], [5, 4, 2, 5], [7, 8, 3, 2]]
     B = [[1, 2, 4, -1], [5, 3, 1, 0], [0, 0, 2, 0]]
+    B1 = [[0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0], [1, 0, 0, 0]]
+
 
     #  Test for the brute-force solution of finding the maximum contiguous subarray in P69 & P74 4.1-2.
     print("Test for the naive algorithm of max subarray in P69:", max_subarray_naive( A ) )
@@ -411,4 +469,5 @@ if __name__ == '__main__':
     #  Test for a series of Matrix multiplications in P75.
     print("Test for the naive Matrix multiplication in P75:", matrix_multip_pt( A4, B ))
     print("Test for the row Matrix multiplication in P75:", matrix_multip_row( A4, B ))
-    print("Test for the column Matrix multiplication in P75:", matrix_multip_col(A4, B))
+    print("Test for the column Matrix multiplication in P75:", matrix_multip_col(A5, B1))
+    print("Test for divide-and-conquer Matrix multiplication in P75:", matrix_multip_recur( A5, B1, 0, len(A5) - 1, 0, len(A5[0]) - 1, 0, len(B1) - 1, 0, len(B1[0]) - 1))
