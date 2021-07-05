@@ -442,6 +442,44 @@ def matrix_multip_recur( A, B, A_starti, A_endi, A_startj, A_endj, B_starti, B_e
     return np.vstack((C_upper, C_lower)).tolist()
 
 
+"""
+The naive algorithm for powering a number.
+Input @para: a number x and its exponent n .
+Output: y = x ^ n.
+"""
+def power_naive( x, n ):
+    y = 1 / x
+    for i in range( 0, n + 1 ):
+        y = y * x
+    return y
+
+
+"""
+The divide and conquer algorithm for powering a number.
+Input @para: a number x and its exponent n .
+Output: y = x ^ n.
+"""
+def power_recur( x, n ):
+
+    #  Base case
+    if n == 1:
+        return x
+
+    #  Divide
+    y = power_recur(x, n // 2)
+
+    #  Conquer
+    #  When n is an even number.
+    if n % 2 == 0:
+        return y * y
+    #  When n is an odd number.
+    else:
+        return y * y * x
+
+
+
+
+
 if __name__ == '__main__':
     A = [13, -3, -25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15, -4, 7]
     A2 = [-3, 13, 7, 28, -28, 4, 3, 2, 40]
@@ -470,4 +508,8 @@ if __name__ == '__main__':
     print("Test for the naive Matrix multiplication in P75:", matrix_multip_pt( A4, B ))
     print("Test for the row Matrix multiplication in P75:", matrix_multip_row( A4, B ))
     print("Test for the column Matrix multiplication in P75:", matrix_multip_col(A5, B1))
-    print("Test for divide-and-conquer Matrix multiplication in P75:", matrix_multip_recur( A5, B1, 0, len(A5) - 1, 0, len(A5[0]) - 1, 0, len(B1) - 1, 0, len(B1[0]) - 1))
+    print("Test for divide-and-conquer Matrix multiplication in P75:", matrix_multip_recur( A5, B1, 0, len(A5) - 1, 0, len(A5[0]) - 1, 0, len(B1) - 1, 0, len(B1[0]) - 1), '\n')
+
+    #  Test for number powering.
+    print("Test for naive number powering:", power_naive( 2, 10 ))
+    print("Test for recursive number powering:", power_recur( 2, 9 ), '\n')
