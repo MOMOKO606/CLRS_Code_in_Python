@@ -146,7 +146,7 @@ def max_heapify_iter( A, i ):
             #  the pythonic way is A[largest], A[i] =  A[i], A[largest]
             A[largest], A[i] = exchange(A[largest], A[i])
             i = largest
-        #  All nodes satisfied the max heap rule.
+        #  Break the loop if all nodes satisfied the max heap rule.
         else: break
     return A
 
