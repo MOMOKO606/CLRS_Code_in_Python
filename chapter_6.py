@@ -51,13 +51,17 @@ def exchange( x, y ):
 """
 Make sure that all the nodes in the subtree rooted at A[i] obey the max heap rule.
 Start from node A[i], check A[left(i)] and A[right(i)], 
-Tha value of the parent node must larger than the value of its children nodes. 
+Tha value of the parent node must be larger than the value of its children nodes. 
 Input @para: list A and node index i.
 Output @para: the maximum heapified list A from A[i].
 """
 def max_heapify( A, i ):
 
     n = len(A)
+    #  Set sentinel
+    if i > n // 2:
+        return A
+
     left_index = left(i)
     right_index = right(i)
 
@@ -76,6 +80,40 @@ def max_heapify( A, i ):
         #  recursively check the nodes below.
         max_heapify(A, largest)
         return A
+
+
+"""
+Make sure that all the nodes in the subtree rooted at A[i] obey the min heap rule.
+Start from node A[i], check A[left(i)] and A[right(i)], 
+Tha value of the parent node must be smaller than the value of its children nodes. 
+Input @para: list A and node index i.
+Output @para: the minimum heapified list A from A[i].
+"""
+def min_heapify( A, i ):
+
+    n = len(A)
+    #  Set sentinel
+    if i > n // 2:
+        return A
+    left_index = left(i)
+    right_index = right(i)
+
+    #  Find the smallest index in i, left_index and right_index
+    if left_index < n and A[left_index] < A[i]:
+        smallest = left_index
+    else: smallest = i
+
+    if right_index < n and A[right_index] < A[smallest]:
+        smallest = right_index
+
+    #  Fix the node that doesn't obey to heap rule.
+    if smallest != i:
+        A[smallest], A[i] = A[i], A[smallest]
+        #  recursively check the nodes below.
+        min_heapify( A, smallest )
+        return A
+
+
 
 
 
