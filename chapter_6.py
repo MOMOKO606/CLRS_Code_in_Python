@@ -48,7 +48,9 @@ def exchange( x, y ):
     x = x - y  # now x = sum - y = sum - the original x = the original y
     return x, y
 
+
 """
+The recursive version of max_heapify.
 Make sure that all the nodes in the subtree rooted at A[i] obey the max heap rule.
 Start from node A[i], check A[left(i)] and A[right(i)], 
 Tha value of the parent node must be larger than the value of its children nodes. 
@@ -114,12 +116,46 @@ def min_heapify( A, i ):
         return A
 
 
+"""
+The iterative version of max_heapify in 6.2-5.
+Make sure that all the nodes in the subtree rooted at A[i] obey the max heap rule.
+Start from node A[i], check A[left(i)] and A[right(i)], 
+Tha value of the parent node must be larger than the value of its children nodes. 
+Input @para: list A and node index i.
+Output @para: the maximum heapified list A from A[i].
+"""
+def max_heapify_iter( A, i ):
 
+    n = len(A)
+
+    #  while condition: it's a inner node, not a leaf.
+    while i <= n // 2 :
+        left_index = left(i)
+        right_index = right(i)
+
+        #  Find the largest index in i, left_index and right_index
+        if left_index < n and A[left_index] > A[i]:
+            largest = left_index
+        else:
+            largest = i
+
+        if right_index < n and A[right_index] > A[largest]:
+            largest = right_index
+
+        if largest != i:
+            #  the pythonic way is A[largest], A[i] =  A[i], A[largest]
+            A[largest], A[i] = exchange(A[largest], A[i])
+            i = largest
+        #  All nodes satisfied the max heap rule.
+        else: break
+    return A
 
 
 
 if __name__ == '__main__':
     A = [27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0]
 
-    #  Test for the max_heapify in P1543.
-    print("Test for the max_heapify in P154:", max_heapify( A, 2 ) )
+    #  Test for the max_heapify in P154.
+    print("Test for the max_heapify in P154:", max_heapify( A[:], 2 ) )
+    #  Test for the iterative max_heapify in P156.
+    print("Test for the iterative max_heapify in P156:", max_heapify(A[:], 2), '\n' )
