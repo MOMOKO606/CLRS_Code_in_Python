@@ -1,3 +1,5 @@
+import math
+
 """
 Get the parent index of index i in a heap.
 Input @para: index i.
@@ -61,7 +63,7 @@ def max_heapify( A, i ):
 
     n = len(A)
     #  Set sentinel
-    if i > n // 2:
+    if i >= math.ceil(n / 2):
         return A
 
     left_index = left(i)
@@ -95,7 +97,7 @@ def min_heapify( A, i ):
 
     n = len(A)
     #  Set sentinel
-    if i > n // 2:
+    if i >= math.ceil(n / 2):
         return A
     left_index = left(i)
     right_index = right(i)
@@ -129,7 +131,7 @@ def max_heapify_iter( A, i ):
     n = len(A)
 
     #  while condition: it's a inner node, not a leaf.
-    while i <= n // 2 :
+    while i < math.ceil(n / 2):
         left_index = left(i)
         right_index = right(i)
 
