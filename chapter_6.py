@@ -153,11 +153,28 @@ def max_heapify_iter( A, i ):
     return A
 
 
+"""
+Build a max heap from list A.
+Input @para: list A.
+Output @para: the max heap A.
+"""
+def build_max_heap( A ):
+
+    #  Build the max heap in a decreasing order.
+    for i in range( math.ceil( len(A) / 2 ), -1, -1 ):
+        max_heapify(A, i)
+    return A
+
+
+
 
 if __name__ == '__main__':
     A = [27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0]
+    A1 = [5, 3, 17, 10, 84, 19, 6, 22, 9]
 
     #  Test for the max_heapify in P154.
     print("Test for the max_heapify in P154:", max_heapify( A[:], 2 ) )
     #  Test for the iterative max_heapify in P156.
     print("Test for the iterative max_heapify in P156:", max_heapify(A[:], 2), '\n' )
+    #  Test for build a max heap (6.3-1) in P159.
+    print("Test for build a max heap (6.3-1) in P159:", build_max_heap( A1[:] ), '\n')
