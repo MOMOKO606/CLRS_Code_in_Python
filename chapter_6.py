@@ -59,22 +59,21 @@ Tha value of the parent node must be larger than the value of its children nodes
 Input @para: list A and node index i.
 Output @para: the maximum heapified list A from A[i].
 """
-def max_heapify( A, i ):
+def max_heapify( A, i, heap_size ):
 
-    n = len(A)
     #  Set sentinel
-    if i >= math.ceil(n / 2):
+    if i >= math.ceil( heap_size / 2 ):
         return A
 
     left_index = left(i)
     right_index = right(i)
 
     #  Find the largest index in i, left_index and right_index
-    if left_index < n and A[left_index] > A[i]:
+    if left_index < heap_size and A[left_index] > A[i]:
         largest = left_index
     else: largest = i
 
-    if right_index < n and A[right_index] > A[largest]:
+    if right_index < heap_size and A[right_index] > A[largest]:
         largest = right_index
 
     #  Fix the node that doesn't obey to heap rule.
@@ -82,7 +81,7 @@ def max_heapify( A, i ):
         #  the pythonic way is A[largest], A[i] =  A[i], A[largest]
         A[largest], A[i] = exchange( A[largest], A[i] )
         #  recursively check the nodes below.
-        max_heapify(A, largest)
+        max_heapify(A, largest, heap_size)
         return A
 
 
@@ -93,28 +92,27 @@ Tha value of the parent node must be smaller than the value of its children node
 Input @para: list A and node index i.
 Output @para: the minimum heapified list A from A[i].
 """
-def min_heapify( A, i ):
+def min_heapify( A, i, heap_size ):
 
-    n = len(A)
     #  Set sentinel
-    if i >= math.ceil(n / 2):
+    if i >= math.ceil( heap_size / 2 ):
         return A
     left_index = left(i)
     right_index = right(i)
 
     #  Find the smallest index in i, left_index and right_index
-    if left_index < n and A[left_index] < A[i]:
+    if left_index < heap_size and A[left_index] < A[i]:
         smallest = left_index
     else: smallest = i
 
-    if right_index < n and A[right_index] < A[smallest]:
+    if right_index < heap_size and A[right_index] < A[smallest]:
         smallest = right_index
 
     #  Fix the node that doesn't obey to heap rule.
     if smallest != i:
         A[smallest], A[i] = A[i], A[smallest]
         #  recursively check the nodes below.
-        min_heapify( A, smallest )
+        min_heapify( A, smallest, heap_size )
         return A
 
 
@@ -126,22 +124,20 @@ Tha value of the parent node must be larger than the value of its children nodes
 Input @para: list A and node index i.
 Output @para: the maximum heapified list A from A[i].
 """
-def max_heapify_iter( A, i ):
-
-    n = len(A)
+def max_heapify_iter( A, i, heap_size ):
 
     #  while condition: it's a inner node, not a leaf.
-    while i < math.ceil(n / 2):
+    while i < math.ceil( heap_size / 2 ):
         left_index = left(i)
         right_index = right(i)
 
         #  Find the largest index in i, left_index and right_index
-        if left_index < n and A[left_index] > A[i]:
+        if left_index < heap_size and A[left_index] > A[i]:
             largest = left_index
         else:
             largest = i
 
-        if right_index < n and A[right_index] > A[largest]:
+        if right_index < heap_size and A[right_index] > A[largest]:
             largest = right_index
 
         if largest != i:
@@ -162,8 +158,32 @@ def build_max_heap( A ):
 
     #  Build the max heap in a decreasing order.
     for i in range( math.ceil( len(A) / 2 ), -1, -1 ):
-        max_heapify(A, i)
+        max_heapify( A, i, len(A) )
     return A
+
+
+"""
+Heapsort 
+Input @para: list A.
+Output @para: the sorted A.
+"""
+def heapsort( A ):
+
+    #  Initializing
+    heap_size = len( A )
+    build_max_heap(A)
+
+    #  Exchange the largest element with the last element in the heap.
+    for i in range(heap_size - 1, 0 ,-1):
+        A[0], A[i] = A[i], A[0]
+        #  Decreasing the heap size.
+        heap_size = heap_size - 1
+        #  Max heapify from the root.
+        max_heapify(A, 0, heap_size )
+
+    return A
+
+
 
 
 
@@ -173,8 +193,10 @@ if __name__ == '__main__':
     A1 = [5, 3, 17, 10, 84, 19, 6, 22, 9]
 
     #  Test for the max_heapify in P154.
-    print("Test for the max_heapify in P154:", max_heapify( A[:], 2 ) )
+    print("Test for the max_heapify in P154:", max_heapify( A[:], 2, len(A) ))
     #  Test for the iterative max_heapify in P156.
-    print("Test for the iterative max_heapify in P156:", max_heapify(A[:], 2), '\n' )
+    print("Test for the iterative max_heapify in P156:", max_heapify(A[:], 2, len(A)), '\n' )
     #  Test for build a max heap (6.3-1) in P159.
     print("Test for build a max heap (6.3-1) in P159:", build_max_heap( A1[:] ), '\n')
+    #  Test for heapsort in P160.
+    print("Test for heapsort in P160:", heapsort( A1[:] ), '\n')
