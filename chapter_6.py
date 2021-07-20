@@ -163,7 +163,7 @@ def build_max_heap( A ):
 
 
 """
-Heapsort 
+Heapsort
 Input @para: list A.
 Output @para: the sorted A.
 """
@@ -184,6 +184,46 @@ def heapsort( A ):
     return A
 
 
+"""
+Get the maximum element in heap A.
+Input @para: list A.
+Output @para: the maximum element in A (= the root of heap A).
+"""
+def heap_get_max( A ):
+
+    #  Sentinel.
+    assert len(A) > 0, "A is empty."
+    #  return the root.
+    return A[0]
+
+
+"""
+Insert a new element x into the max heap A.
+Input @para: heap A, element x, heap_size 
+Output @para: the new heap A after x inserted.
+"""
+def max_heap_insert( A, x, heap_size ):
+
+    #  Update heap A.
+    heap_size = heap_size + 1
+    A.append( x )
+
+    #  Initialize the indices needed.
+    i = heap_size - 1
+    parent_i = parent(i)
+
+    while parent_i >= 0 and A[parent_i] < A[i]:
+        A[parent_i], A[i] = A[i], A[parent_i]
+        i = parent_i
+
+        #  Update the indices.
+        parent_i = parent(i)
+
+    return A
+
+
+
+
 
 
 
@@ -191,6 +231,7 @@ def heapsort( A ):
 if __name__ == '__main__':
     A = [27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0]
     A1 = [5, 3, 17, 10, 84, 19, 6, 22, 9]
+    A2 = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1]
 
     #  Test for the max_heapify in P154.
     print("Test for the max_heapify in P154:", max_heapify( A[:], 2, len(A) ))
@@ -199,4 +240,6 @@ if __name__ == '__main__':
     #  Test for build a max heap (6.3-1) in P159.
     print("Test for build a max heap (6.3-1) in P159:", build_max_heap( A1[:] ), '\n')
     #  Test for heapsort in P160.
-    print("Test for heapsort in P160:", heapsort( A1[:] ), '\n')
+    print("Test for heapsort in P160:", heapsort( A2[:] ), '\n')
+    #  Test for heap insert in P162.
+    print("Test for heap insert in P162:", max_heap_insert( A2[:], 28, len(A2) ), '\n')
