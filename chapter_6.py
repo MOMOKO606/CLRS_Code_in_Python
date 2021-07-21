@@ -224,6 +224,34 @@ def heap_change_key( A, i, key, heap_size ):
 
 
 """
+Change the key of one node in the max heap A.
+Input @para: heap A, index i of the node, key of the node, heap_size 
+Output @para: the new heap A after A[i] changed to key.
+"""
+def heap_change_key_beta( A, i, key, heap_size ):
+
+    #  Decrease key.
+    if key <= A[i]:
+
+        A[i] = key
+        #  Top-bottom fixing.
+        max_heapify(A, i, heap_size)
+
+    else:  #  Increase key
+
+        while i > 0 and A[parent(i)] < key:
+            A[i] = A[parent(i)]
+            #  Update the index.
+            i = parent(i)
+
+        A[i] = key
+
+    return A
+
+
+
+
+"""
 Insert a new element x into the max heap A.
 Input @para: heap A, element x, heap_size 
 Output @para: the new heap A after x inserted.
@@ -267,26 +295,59 @@ def extract_max_heap( A, heap_size):
     return A[ :heap_size: ]
 
 
+"""
+Delete the ith node in the max heap A.
+Input @para: heap A, index i of the node, heap_size 
+Output @para: the new heap A after deleted node A[i].
+"""
+def delete_max_heap( A, i, heap_size):
+
+    #  Sentinel.
+    assert i < heap_size and i >=0, "illegal index!"
+
+    #  Exchange A[i] with A[heap_size - 1], then pop the last node.
+    A[i], A[heap_size - 1] = A[heap_size - 1], A[i]
+
+    #  Update heap.
+    heap_size = heap_size - 1
+    max_heapify(A, i, heap_size)
+
+    return A[ :heap_size: ]
+
+
+
 
 
 
 if __name__ == '__main__':
     A = [27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0]
     A1 = [5, 3, 17, 10, 84, 19, 6, 22, 9]
-    A2 = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1]       #  A2 is a max heap already.
+    A2 = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1]       #  A2 is a max heap.
+    A3 = [15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]  #  A3 is a max heap.
 
     #  Test for the max_heapify in P154.
     print("Test for the max_heapify in P154:", max_heapify( A[:], 2, len(A) ))
+
     #  Test for the iterative max_heapify in P156.
     print("Test for the iterative max_heapify in P156:", max_heapify(A[:], 2, len(A)), '\n' )
+
     #  Test for build a max heap (6.3-1) in P159.
     print("Test for build a max heap (6.3-1) in P159:", build_max_heap( A1[:] ), '\n')
+
     #  Test for heapsort in P160.
     print("Test for heapsort in P160:", heapsort( A2[:] ), '\n')
 
     #  Test for extracting max heap in P162.
-    print("Test for extracting max heap in P162:", extract_max_heap( A2[:], len(A2) ), '\n')
+    print("Test for extracting max heap in P162:", extract_max_heap( A3[:], len(A3) ), '\n')
+
     #  Test for changing a key in a max heap  in P162.
     print("Test for changing a key in a  max heap in P162:", heap_change_key( A2[:], 1, 5, len(A2) ), '\n')
+
+    #  Test for changing a key in a max heap in 6.5-6 P166.
+    print("Test for changing a key in a  max heap in 6.5-6 P166:", heap_change_key_beta(A2[:], 1, 5, len(A2)), '\n')
+
     #  Test for heap insert in P162.
-    print("Test for heap insert in P162:", max_heap_insert( A2[:], 28, len(A2) ), '\n')
+    print("Test for heap insert in P162:", max_heap_insert( A3[:], 10, len(A3) ), '\n')
+
+    #  Test for deleting a key in a max heap in 6.5-8 P166.
+    print("Test for deleting a key in a max heap in 6.5-8 P166:", delete_max_heap( A3[:], 0, len(A3)), '\n')
