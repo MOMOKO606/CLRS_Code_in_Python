@@ -198,31 +198,73 @@ def heap_get_max( A ):
 
 
 """
-Insert a new element x into the max heap A.
-Input @para: heap A, element x, heap_size 
-Output @para: the new heap A after x inserted.
+Change the key of one node in the max heap A.
+Input @para: heap A, index i of the node, key of the node, heap_size 
+Output @para: the new heap A after A[i] changed to key.
 """
-def max_heap_insert( A, x, heap_size ):
+def heap_change_key( A, i, key, heap_size ):
 
-    #  Update heap A.
-    heap_size = heap_size + 1
-    A.append( x )
+    #  Decrease key.
+    if key <= A[i]:
 
-    #  Initialize the indices needed.
-    i = heap_size - 1
-    parent_i = parent(i)
+        A[i] = key
+        #  Top-bottom fixing.
+        max_heapify(A, i, heap_size)
 
-    while parent_i >= 0 and A[parent_i] < A[i]:
-        A[parent_i], A[i] = A[i], A[parent_i]
-        i = parent_i
+    else:  #  Increase key
 
-        #  Update the indices.
-        parent_i = parent(i)
+        A[i] = key
+        #  Bottom-top fixing.
+        while i > 0 and A[parent(i)] < A[i]:
+            A[parent(i)], A[i] = A[i], A[parent(i)]
+            #  Update the index.
+            i = parent(i)
 
     return A
 
 
+"""
+Insert a new element x into the max heap A.
+Input @para: heap A, element x, heap_size 
+Output @para: the new heap A after x inserted.
+"""
+def max_heap_insert( A, key, heap_size ):
 
+    #  Add a new element in the end.
+    heap_size = heap_size + 1
+    A.append( float("-inf") )
+
+    #  Adjust the added element through its key.
+    heap_change_key( A, heap_size - 1, key, heap_size )
+
+    return A
+
+
+"""
+Extract the maximum element in max heap A.
+Input @para: heap A, heap_size 
+Output @para: the new heap A after extracted the max element.
+"""
+def extract_max_heap( A, heap_size):
+
+    #  Sentinel
+    assert( heap_size > 0 ), "It is a empty heap."
+
+    #  Extract the maximum element.
+    max_key = A[0]
+
+    #  Update the max heap.
+    #  Exchange the maximum element with the last element in the heap,
+    #  then pop the maximum element.
+    A[0], A[heap_size - 1] = A[heap_size - 1], A[0]
+
+    #  Decrease heap size by 1
+    heap_size = heap_size - 1
+
+    #  Screening all elements to satisfied the max heap rule.
+    max_heapify(A, 0, heap_size)
+
+    return A[ :heap_size: ]
 
 
 
@@ -231,7 +273,7 @@ def max_heap_insert( A, x, heap_size ):
 if __name__ == '__main__':
     A = [27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0]
     A1 = [5, 3, 17, 10, 84, 19, 6, 22, 9]
-    A2 = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1]
+    A2 = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1]       #  A2 is a max heap already.
 
     #  Test for the max_heapify in P154.
     print("Test for the max_heapify in P154:", max_heapify( A[:], 2, len(A) ))
@@ -241,5 +283,10 @@ if __name__ == '__main__':
     print("Test for build a max heap (6.3-1) in P159:", build_max_heap( A1[:] ), '\n')
     #  Test for heapsort in P160.
     print("Test for heapsort in P160:", heapsort( A2[:] ), '\n')
+
+    #  Test for extracting max heap in P162.
+    print("Test for extracting max heap in P162:", extract_max_heap( A2[:], len(A2) ), '\n')
+    #  Test for changing a key in a max heap  in P162.
+    print("Test for changing a key in a  max heap in P162:", heap_change_key( A2[:], 1, 5, len(A2) ), '\n')
     #  Test for heap insert in P162.
     print("Test for heap insert in P162:", max_heap_insert( A2[:], 28, len(A2) ), '\n')
