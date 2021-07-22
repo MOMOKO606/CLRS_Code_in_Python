@@ -324,10 +324,11 @@ class MaxHeap:
 
     def __init__( self, list_A = [] ):
 
-        self.heap_size = len(list_A)
-        self.heap_A = list_A
+        #  Private parameters.
+        self.__heap_size = len(list_A)
+        self.__heap_A = list_A
 
-        if self.heap_size > 0:
+        if self.__heap_size > 0:
             A = MaxHeap.build_max_heap( self )
 
 
@@ -384,7 +385,7 @@ class MaxHeap:
     def max_heapify( self, A, i ):
 
         #  Get the initialized heap size.
-        heap_size = self.heap_size
+        heap_size = self.__heap_size
 
         #  Set sentinel
         if i >= math.ceil(heap_size / 2):
@@ -420,10 +421,10 @@ class MaxHeap:
     def build_max_heap( self ):
 
         #  Get the initialized heap A.
-        A = self.heap_A
+        A = self.__heap_A
 
         #  Build the max heap in a decreasing order.
-        for i in range(math.ceil(self.heap_size / 2), -1, -1):
+        for i in range(math.ceil(self.__heap_size / 2), -1, -1):
             A = self.max_heapify( A, i )
 
         #  Return the new heap.
@@ -438,8 +439,8 @@ class MaxHeap:
     def heapsort( self ):
 
         #  Initializing
-        heap_size = self.heap_size
-        A = self.heap_A
+        heap_size = self.__heap_size
+        A = self.__heap_A
 
         #  Exchange the largest element with the last element in the heap.
         for i in range(heap_size - 1, 0, -1):
@@ -447,14 +448,14 @@ class MaxHeap:
 
             #  Decreasing the heap size and update.
             heap_size = heap_size - 1
-            self.heap_size = heap_size
+            self.__heap_size = heap_size
 
             #  Max heapify from the root.
             self.max_heapify( A, 0 )
 
         #  Update parameters
-        self.heap_A = []
-        self.heap_size = 0
+        self.__heap_A = []
+        self.__heap_size = 0
 
         return A
 
@@ -467,11 +468,11 @@ class MaxHeap:
     def max_node( self ):
 
         #  Load parameters
-        A = self.heap_A
-        heap_size = self.heap_size
+        A = self.__heap_A
+        heap_size = self.__heap_size
 
         #  Sentinel.
-        assert self.heap_size > 0, "heap is empty."
+        assert self.__heap_size > 0, "heap is empty."
         #  return the root.
         return A[0]
 
@@ -484,8 +485,8 @@ class MaxHeap:
     def change_key( self, i, key ):
 
         #  Load parameters.
-        heap_size = self.heap_size
-        A = self.heap_A
+        heap_size = self.__heap_size
+        A = self.__heap_A
 
         #  Decrease key.
         if key <= A[i]:
@@ -514,8 +515,8 @@ class MaxHeap:
     def insert_node( self, key ):
 
         #  Load parameters.
-        heap_size = self.heap_size
-        A = self.heap_A
+        heap_size = self.__heap_size
+        A = self.__heap_A
 
         #  Add a new element in the end.
         heap_size = heap_size + 1
@@ -525,8 +526,8 @@ class MaxHeap:
         self.change_key( heap_size - 1, key, )
 
         #  Update parameters
-        self.heap_A = A
-        self.heap_size = heap_size
+        self.__heap_A = A
+        self.__heap_size = heap_size
 
         return A
 
@@ -539,8 +540,8 @@ class MaxHeap:
     def extract( self ):
 
         #  Load parameters.
-        heap_size = self.heap_size
-        A = self.heap_A
+        heap_size = self.__heap_size
+        A = self.__heap_A
 
         #  Sentinel
         assert (heap_size > 0), "It is a empty heap."
@@ -556,13 +557,13 @@ class MaxHeap:
         #  Decrease heap size by 1
         heap_size = heap_size - 1
         #  Update heap size
-        self.heap_size = heap_size
+        self.__heap_size = heap_size
 
         #  Screening all elements to satisfied the max heap rule.
         A = self.max_heapify( A, 0 )
 
         #  Update
-        self.heap_A = A[:heap_size:]
+        self.__heap_A = A[:heap_size:]
 
         return A[:heap_size:]
 
@@ -575,8 +576,8 @@ class MaxHeap:
     def delete( self, i ):
 
         #  Load parameters.
-        heap_size = self.heap_size
-        A = self.heap_A
+        heap_size = self.__heap_size
+        A = self.__heap_A
 
         #  Sentinel.
         assert i < heap_size and i >= 0, "illegal index!"
@@ -589,8 +590,8 @@ class MaxHeap:
         A = self.max_heapify( A, i )
 
         #  Update parameters
-        self.heap_A = A[:heap_size:]
-        self.heap_size = heap_size
+        self.__heap_A = A[:heap_size:]
+        self.__heap_size = heap_size
 
         return A[:heap_size:]
 
@@ -599,7 +600,7 @@ class MaxHeap:
     The print function of the instance of MaxHeap class.
     """
     def __str__( self ):
-        return str( self.heap_A )
+        return str( self.__heap_A )
 
 
 
@@ -658,3 +659,4 @@ if __name__ == '__main__':
 
     #  Test for deleting a key in a max heap in 6.5-8 P166.
     print("Test for deleting a key in a max heap in 6.5-8 P166:", heap_z.delete(0), '\n')
+
