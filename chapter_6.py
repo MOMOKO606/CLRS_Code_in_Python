@@ -13,6 +13,7 @@ def parent( i ):
     # "move n digits to the right" means "i // 2 ^ n", e.g. 1024 >> 10 is 1.
     return i - 1 >> 1
 
+
 """
 Get the left child index of index i in a heap.
 Input @para: index i.
@@ -26,6 +27,7 @@ def left( i ):
     # "move n digits to the right" means "i * 2 ^ n", e.g. 1 << 10 is 1024.
     return (i << 1) + 1
 
+
 """
 Get the right child index of index i in a heap.
 Input @para: index i.
@@ -38,6 +40,7 @@ def right( i ):
     # "move one digit to the left" means "i * 2".
     # "move n digits to the right" means "i * 2 ^ n", e.g. 1 << 10 is 1024.
     return i + 1 << 1
+
 
 """
 Exchange the value of x and y without using additional variables.
@@ -82,7 +85,8 @@ def max_heapify( A, i, heap_size ):
         A[largest], A[i] = exchange( A[largest], A[i] )
         #  recursively check the nodes below.
         max_heapify(A, largest, heap_size)
-        return A
+
+    return A
 
 
 """
@@ -113,7 +117,8 @@ def min_heapify( A, i, heap_size ):
         A[smallest], A[i] = A[i], A[smallest]
         #  recursively check the nodes below.
         min_heapify( A, smallest, heap_size )
-        return A
+
+    return A
 
 
 """
@@ -247,8 +252,6 @@ def heap_change_key_beta( A, i, key, heap_size ):
         A[i] = key
 
     return A
-
-
 
 
 """
