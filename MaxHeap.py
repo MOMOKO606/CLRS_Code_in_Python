@@ -270,11 +270,12 @@ class MaxHeap:
 
         #  Update heap.
         heap_size = heap_size - 1
+        self.__heap_size = heap_size
         A = self.max_heapify( A, i )
 
         #  Update parameters
         self.__heap_A = A[:heap_size:]
-        self.__heap_size = heap_size
+
 
         return A[:heap_size:]
 

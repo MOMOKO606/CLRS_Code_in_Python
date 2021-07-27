@@ -1,6 +1,7 @@
 import math
 import MaxHeap as maxh
 import MinHeap as minh
+import MinHeap4dict as mh4d
 
 """
 Get the parent index of index i in a heap.
@@ -320,8 +321,10 @@ def delete_max_heap( A, i, heap_size):
     return A[ :heap_size: ]
 
 
-
 """
+Merge k sorted lists using a minimum heap.
+Input @para: matrix = 2-D lists of the k sorted lists, n = number of elements in the k sorted lists.
+Output @para: the sorted list of the n elements.
 """
 def sort_klists( matrix, n ):
 
@@ -338,28 +341,33 @@ def sort_klists( matrix, n ):
             if j >= len(matrix[i]):
                 matrix[i].append( (float("inf"), 10 * i + j) )
             else:
-                matrix[i][j] = (matrix[i][j], 10 * j + j)
-
-
-
+                matrix[i][j] = (matrix[i][j], 10 * i + j)
 
 
     #  Initializing the heap by creating an empty maximum heap.
-    # A = MaxHeap()
-    #
-    #
-    # A.insert_node()
+    A = mh4d.MinHeap4dict()
+    for i in range(k):
+        A.insert_node( matrix[i][0][0], matrix[i][0][1])
 
+    #  Get the smallest element from the heap once a time.
+    result = []
+    for k in range(n):
 
+        #  Get the pointer.
+        tmp = A.min_node()
+        i = tmp[1] // 10
+        j = tmp[1] - i * 10
 
+        #  Put the smallest node into the result.
+        result.append( tmp[0] )
 
+        #  Update the heap.
+        A.extract()  #  Extract the min node.
+        #  If the i list does not meet the sentinel, insert the next node in i list.
+        if j + 1 <= max_cols -1 and matrix[i][j][0] < float("inf"):
+            A.insert_node(matrix[i][j + 1][0], matrix[i][j + 1][1])
 
-
-
-
-
-
-
+    return result
 
 
 
@@ -372,7 +380,7 @@ if __name__ == '__main__':
     A3 = [15, 13, 9, 5, 12, 8, 7, 4, 0, 6, 2, 1]  #  A3 is a max heap.
     A4 = [4, 1, 3, 2, 16, 9, 10, 14, 8, 7]
     A5 = [1, 2, 3, 4, 7, 9, 10, 14, 8, 16]  # A5 is a min heap.
-    matrix = [[3, 9, 11], [7], [5, 8], [1, 4, 6, 10]]
+    matrix = [[3, 9, 11], [7], [5, 8], [1, 4, 6, 10]]  #  matrix contains k sorted lists.
 
     #  Test for the max_heapify in P154.
     print("Test for the max_heapify in P154:", max_heapify( A[:], 2, len(A) ))
@@ -430,9 +438,10 @@ if __name__ == '__main__':
     print("Test for changing a key in the min heap A5: ", heap_q.change_key(1, 5), '\n')
 
     #  Test for deleting a key in the min heap A5.
-    print("Test for deleting a key in the min heap A5:", heap_q.delete(0))
+    print("Test for deleting a key in the min heap A5:", heap_q.delete(0), '\n')
 
- #   sort_klists(matrix, 10)
+    #   Test for sorting k sorted lists 6.5-9 P166.
+    print("Test for sorting k sorted lists  6.5-9 P166:", sort_klists(matrix, 10), '\n')
 
 
 

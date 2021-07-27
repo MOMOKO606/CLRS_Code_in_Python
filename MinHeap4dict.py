@@ -1,10 +1,10 @@
 import math
 
 """
-Class form of minimum heap.
+Min heap for list of key-value tuples.
+e.g. list A = [(key1, value1), (key2, value2), ...]
 """
-class MinHeap:
-
+class MinHeap4dict:
 
     def __init__( self, list_A = [] ):
 
@@ -12,7 +12,7 @@ class MinHeap:
         self.__heap_A = list_A
 
         if self.__heap_size > 0:
-            A = MinHeap.build_min_heap( self )
+            A = MinHeap4dict.build_min_heap( self )
 
 
     """
@@ -78,12 +78,12 @@ class MinHeap:
         right_index = self.right(i)
 
         #  Find the smallest index in i, left_index and right_index
-        if left_index < heap_size and A[left_index] < A[i]:
+        if left_index < heap_size and A[left_index][0] < A[i][0]:
             smallest = left_index
         else:
             smallest = i
 
-        if right_index < heap_size and A[right_index] < A[smallest]:
+        if right_index < heap_size and A[right_index][0] < A[smallest][0]:
             smallest = right_index
 
         #  Fix the node that doesn't obey to heap rule.
@@ -170,21 +170,23 @@ class MinHeap:
         #  Load parameters.
         heap_size = self.__heap_size
         A = self.__heap_A
+        value = A[i][1]
 
         #  Decrease key.
-        if key <= A[i]:
+        if key <= A[i][0]:
 
             #  Bottom-top fixing.
-            while i > 0 and A[self.parent(i)] > key:
+            while i > 0 and A[self.parent(i)][0] > key:
                 A[i] = A[self.parent(i)]
                 #  Update the index.
                 i = self.parent(i)
 
-            A[i] = key
+            #  We replace A[i] since tuple is unchangeable.
+            A[i] = (key, value)
 
         else:  # Increase key
 
-            A[i] = key
+            A[i] = (key, value)
             #  Top-bottom fixing.
             A = self.min_heapify( A, i )
 
@@ -196,7 +198,7 @@ class MinHeap:
     Input @para: heap A, element x, heap_size 
     Output @para: the new heap A after x inserted.
     """
-    def insert_node( self, key ):
+    def insert_node( self, key, value ):
 
         #  Load parameters.
         heap_size = self.__heap_size
@@ -204,10 +206,10 @@ class MinHeap:
 
         #  Add a new element in the end.
         heap_size = heap_size + 1
-        A.append(float("inf"))
+        A.append((float("inf"), value))
 
         #  Adjust the added element through its key.
-        self.change_key( heap_size - 1, key, )
+        self.change_key( heap_size - 1, key )
 
         #  Update parameters
         self.__heap_A = A
