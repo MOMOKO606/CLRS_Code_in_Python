@@ -370,6 +370,129 @@ def sort_klists( matrix, n ):
     return result
 
 
+"""
+Start youngify from Y[i][j] in a young tableau. 
+From left-top to right-bottom.
+(The value of Y[i][j] maybe changed, so we want to make sure all the elements in Y obey young tableau's rule.)
+Input @para: young tableau Y, start position i & j.
+Output @para: the new young tableau after youngify starts from Y[i][j].
+"""
+def youngify_iter( Y, i, j ):
+
+    #  Get the size of Y.
+    m = len(Y)
+    n = len(Y[0])
+
+    while i < m - 1 or j < n - 1:
+
+        if i + 1 < m and Y[i + 1][j] < Y[i][j]:
+            smallesti = i + 1
+            smallestj = j
+        else:
+            smallesti = i
+            smallestj = j
+
+        if j + 1 < n and Y[i][j + 1] < Y[smallesti][smallestj]:
+            smallesti = i
+            smallestj = j + 1
+
+        if smallestj != j or smallesti != i:
+            Y[smallesti][smallestj], Y[i][j] = Y[i][j], Y[smallesti][smallestj]
+            i = smallesti
+            j = smallestj
+        else: return Y
+
+    return Y
+
+
+"""
+Start youngify recursively from Y[i][j] in a young tableau. 
+From left-top to right-bottom.
+(The value of Y[i][j] maybe changed, so we want to make sure all the elements in Y obey young tableau's rule.)
+Input @para: young tableau Y, start position i & j, m * n is the size of Y.
+Output @para: the new young tableau after youngify starts from Y[i][j].
+"""
+def youngify( Y, i, j, m, n ):
+
+    #  Base case, reach the end of Y.
+    if i == m and j == n:
+        return Y
+
+    if i + 1 < m and Y[i + 1][j] < Y[i][j]:
+        smallesti = i + 1
+        smallestj = j
+    else:
+        smallesti = i
+        smallestj = j
+
+    if j + 1 < n and Y[i][j + 1] < Y[smallesti][smallestj]:
+        smallesti = i
+        smallestj = j + 1
+
+    if smallestj != j or smallesti != i:
+        Y[smallesti][smallestj], Y[i][j] = Y[i][j], Y[smallesti][smallestj]
+        Y = youngify( Y, smallesti, smallestj, m, n )
+
+    return Y
+
+
+"""
+Start youngify reversely, recursively from Y[i][j] in a young tableau. 
+From right-bottom to left-top.
+(The value of Y[i][j] maybe changed, so we want to make sure all the elements in Y obey young tableau's rule.)
+Input @para: young tableau Y, start position i & j, m * n is the size of Y.
+Output @para: the new young tableau after youngify starts from Y[i][j].
+"""
+def youngify_reverse( Y, i, j ):
+
+    #  Base case, reach the start of Y.
+    if i == 0 and j == 0:
+        return Y
+
+    if i - 1 >= 0 and Y[i - 1][j] > Y[i][j]:
+        largesti = i - 1
+        largestj = j
+    else:
+        largesti = i
+        largestj = j
+
+    if j - 1 >= 0 and Y[i][j - 1] > Y[largesti][largestj]:
+        largesti = i
+        largestj = j - 1
+
+    if largestj != j or largesti != i:
+        Y[largesti][largestj], Y[i][j] = Y[i][j], Y[largesti][largestj]
+        Y = youngify_reverse( Y, largesti, largestj )
+
+    return Y
+
+
+"""
+Extract the minimum element from a young tableau Y, then replace the minimum element of inf and fix Y.
+Input @para: young tableau Y.
+Output @para: the minimum element of Y.
+"""
+def extract_min_yt( Y ):
+
+    #  Get the size of Y.
+    m = len(Y)
+    n = len(Y[0])
+
+    #  Get the minimum element in Y.
+    min_element = Y[0][0]
+    Y[0][0] = float("inf")
+
+    #  Fix the young tableau Y.
+    # Y = youngify_iter( Y, 0, 0 )
+    Y = youngify(Y, 0, 0, m, n)
+
+    return min_element
+
+
+
+
+
+
 
 
 
@@ -381,6 +504,10 @@ if __name__ == '__main__':
     A4 = [4, 1, 3, 2, 16, 9, 10, 14, 8, 7]
     A5 = [1, 2, 3, 4, 7, 9, 10, 14, 8, 16]  # A5 is a min heap.
     matrix = [[3, 9, 11], [7], [5, 8], [1, 4, 6, 10]]  #  matrix contains k sorted lists.
+    #  young tableau
+    Y1 = [[2, 8, 10, 12], [7, 9, 11, 13], [16, float("inf"), float("inf"), float("inf")]]
+    Y2 = [[2, 4, 9, float("inf")], [3, 8, 16, float("inf")], [5, 14, float("inf"), float("inf")], [12, float("inf"), float("inf"), float("inf")]]
+
 
     #  Test for the max_heapify in P154.
     print("Test for the max_heapify in P154:", max_heapify( A[:], 2, len(A) ))
@@ -443,5 +570,8 @@ if __name__ == '__main__':
     #   Test for sorting k sorted lists 6.5-9 P166.
     print("Test for sorting k sorted lists  6.5-9 P166:", sort_klists(matrix, 10), '\n')
 
+    #   Test for young tableau in problems 6-9 P168.
+    print("Test for young tableau in problems 6-9 P168:", extract_min_yt( Y2 ))
+    print("Test for young tableau in problems 6-9 P168:", Y2, '\n')
 
 
