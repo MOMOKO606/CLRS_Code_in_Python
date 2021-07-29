@@ -489,7 +489,24 @@ def extract_min_yt( Y ):
     return min_element
 
 
+"""
+Insert a element with the value of key into the right-bottom end position.
+Input @para: young tableau Y, key value.
+Output @para: young tableau Y after inserted key.
+"""
+def insert_yt( Y, key ):
 
+    #  Get the size of Y.
+    m = len(Y)
+    n = len(Y[0])
+
+    #  Insert key to the last element of the young tableau Y.
+    Y[m - 1][n - 1] = key
+
+    #  Fix the young tableau Y.
+    Y = youngify_reverse( Y, m - 1, n - 1 )
+
+    return Y
 
 
 
@@ -570,8 +587,9 @@ if __name__ == '__main__':
     #   Test for sorting k sorted lists 6.5-9 P166.
     print("Test for sorting k sorted lists  6.5-9 P166:", sort_klists(matrix, 10), '\n')
 
-    #   Test for young tableau in problems 6-9 P168.
-    print("Test for young tableau in problems 6-9 P168:", extract_min_yt( Y2 ))
-    print("Test for young tableau in problems 6-9 P168:", Y2, '\n')
+    #   Test for young tableau in problems 6-3 P168.
+    print("Test for extract function in young tableau in problems 6-3 P168:", extract_min_yt( Y1 ))
+    print("Test for young tableau in problems 6-3 P168:", Y1, '\n')
+    print("Test for insert function in young tableau in problems 6-3 P168:", insert_yt( Y2, 10 ), '\n' )
 
 
