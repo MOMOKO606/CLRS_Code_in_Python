@@ -1,3 +1,6 @@
+import random
+
+
 """
 The exquisite & classic function used in Quicksort.
 Input @para: list A, the start & end index of A.
@@ -45,6 +48,24 @@ def quicksort( A, low, high ):
     return A
 
 
+def randomized_quick_sort(A, p, r):
+
+    if p < r:
+        #  Get a random index j from p to r.
+        j = random.randrange( p, r )
+        #  Exchange A[j] and A[r]
+        A[j], A[r] = A[r], A[j]
+
+        #  Implemented quick sort.
+        q = partition(A, p, r)
+        randomized_quick_sort(A, p, q - 1)
+        randomized_quick_sort(A, q + 1, r)
+
+    return A
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -53,4 +74,6 @@ if __name__ == "__main__":
 
     #  Test for Quicksort in P171.
     print("Test for Quicksort in P171: ", quicksort( A, 0, len(A) - 1) , '\n')
+    #  Test for Randomized Quicksort in P179.
+    print("Test for Randomized Quicksort in P179: ", randomized_quick_sort( A, 0, len(A) - 1) , '\n')
 
