@@ -48,8 +48,15 @@ def quicksort( A, low, high ):
     return A
 
 
-def randomized_quick_sort(A, p, r):
+"""
+The randomized Quicksort.
+We choose the pivot randomly to avoid the worst case in which the list is already sorted.
 
+Input @para: list A, p & r = the start & end index of A.
+Output @para: the sorted A[p, ..., r].
+"""
+def randomized_quick_sort(A, p, r):
+    #  Implicit the base case: if p >= r: return A.
     if p < r:
         #  Get a random index j from p to r.
         j = random.randrange( p, r )
@@ -62,8 +69,6 @@ def randomized_quick_sort(A, p, r):
         randomized_quick_sort(A, q + 1, r)
 
     return A
-
-
 
 
 
