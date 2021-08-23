@@ -5,7 +5,6 @@ import random
 The exquisite & classic function used in Quicksort.
 Input @para: list A, the start & end index of A.
 Output @para: j + 1 = the index of the pivot, the list satisfies A[...j] <= pivot, A[j + 1] == pivot, A[j + 2, ...] > pivot.
-
 """
 def partition( A, low, high ):
 
@@ -117,7 +116,7 @@ def hoare_partition(A, p, r):
 
 
 """
-The classic Quicksort using Hoare partition.
+The Quicksort using Hoare partition.
 Input @para: list A, the start & end index of A.
 Output @para: the sorted A[p, ..., r].
 """
@@ -135,9 +134,63 @@ def hoare_quicksort(A, p, r):
     return A
 
 
+"""
+The fixed partition algorithm used in Quicksort.
+Input @para: list A, the start & end index of A.
+Output @para: q & t, the list satisfies A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r].
+"""
+def partition_beta(A, p, r):
+
+    # ---- The original partition algorithm --- #
+    i = p - 1
+    pivot = A[r]
+
+    for j in range(p, r):
+        if A[j] <= pivot:
+            i += 1
+            A[i], A[j] = A[j], A[i]
+    A[i + 1], A[r] = A[r], A[ i + 1 ]
+    t = i + 1
+    # ---- The original partition algorithm --- #
+
+    #  Search the elements that are equal to the pivot from A[t] to A[p].
+    i = t
+    for j in range( t - 1, p - 1 ):
+        if A[j] == pivot:
+            i -= 1
+            A[i], A[j] = A[j], A[i]
+    q = i
+
+    #  A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r]
+    return q, t
+
+
+"""
+The Quicksort beta using partition beta.
+When there are plenty of equal elements in the input,  Quicksort beta performs better.
+
+Input @para: list A, the start & end index of A.
+Output @para: the sorted A[p, ..., r].
+"""
+def quicksort_beta(A, p, r):
+    #  Base case: one or 0 element.
+    if p >= r:
+        return A
+
+    #  Divide A into 2 parts.
+    #  A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r]
+    q, t = partition_beta(A, p, r)
+    #  Recursively sort the 2 parts.
+    hoare_quicksort( A, p, q - 1 )
+    hoare_quicksort( A, t + 1, r )
+
+    return A
+
+
 if __name__ == "__main__":
 
     A = [2, 8, 7, 1, 3, 5, 6, 4]
+    A2 = [2, 8, 1, 3, 1, 3, 7, 1, 3, 5, 5, 1, 6, 4, 1, 2, 2]
 
     #  Test for Quicksort in P171.
     print("Test for Quicksort in P171: ", quicksort( A[:], 0, len(A) - 1) , '\n')
@@ -145,4 +198,5 @@ if __name__ == "__main__":
     print("Test for Randomized Quicksort in P179: ", randomized_quicksort( A[:], 0, len(A) - 1) , '\n')
     #  Test for Quicksort using Hoare-partition in P185.
     print("Test for Quicksort using Hoare-partition in P185: ", hoare_quicksort( A[:], 0, len(A) - 1), '\n')
-
+    #  Test for the Quicksort with equal element values in P186.
+    print("Test for the Quicksort with equal element values in P186: ", quicksort_beta( A2[:], 0, len(A2) - 1), '\n' )
