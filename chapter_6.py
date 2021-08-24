@@ -343,7 +343,6 @@ def sort_klists( matrix, n ):
             else:
                 matrix[i][j] = (matrix[i][j], 10 * i + j)
 
-
     #  Initializing the heap by creating an empty maximum heap.
     A = mh4d.MinHeap4dict()
     for i in range(k):
