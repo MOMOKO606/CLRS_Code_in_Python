@@ -183,8 +183,58 @@ def quicksort_beta(A, p, r):
     #  Recursively sort the 2 parts.
     hoare_quicksort( A, p, q - 1 )
     hoare_quicksort( A, t + 1, r )
-
     return A
+
+
+"""
+The goal of the tail recursion is to optimize the stack depth of recursions.
+When it comes to sorted( or reversed) input of quicksort, 
+the normal quicksort appears to call recursive functions O(n) times, which means the stack depth = O(n).
+However, the stack depth maintains 1 when it comes to the worst case.
+
+Unlike the normal quicksort which performs a balanced recursion (first left part, then right part),
+The tail recursion does a unbalanced recursion. It firstly cope with the left part, then move to the
+right part, split the right part into two smaller parts and cope with its left part again.
+In other words, we only deal with the different left parts, and moving the range until there is no part left.
+
+Input @para: list A, the start & end index of A.
+Output @para: the sorted A[p, ..., r].
+"""
+def quicksort_tail(A, p, r):
+
+    #  Tail recursion using iteration.
+    while p < r:
+        #  Divide the input into 2parts, and cope with the left part first.
+        q = partition(A, p, r)
+        quicksort(A, p, q - 1)
+        #  Moving to the right part.
+        p = q + 1
+    return A
+
+
+"""
+The optimized tail recursion of quicksort guarantees that,
+It always go to the smaller part to do the next recursion to achieve the best stack depth.
+
+Input @para: list A, the start & end index of A.
+Output @para: the sorted A[p, ..., r].
+"""
+def quicksort_tail_opt(A, p, r):
+
+    #  Tail recursion using iteration.
+    while p < r:
+        #  Divide the input into 2parts, and cope with the left part first.
+        q = partition(A, p, r)
+        if q - p < r- q:
+            #  When the left part is smaller.
+            quicksort(A, p, q - 1)
+            #  Moving to the right part then.
+            p = q + 1
+        else:  #  When the right part is smaller.
+            #  Moving to the left part then.
+            r = q - 1
+    return A
+
 
 
 if __name__ == "__main__":
@@ -200,3 +250,19 @@ if __name__ == "__main__":
     print("Test for Quicksort using Hoare-partition in P185: ", hoare_quicksort( A[:], 0, len(A) - 1), '\n')
     #  Test for the Quicksort with equal element values in P186.
     print("Test for the Quicksort with equal element values in P186: ", quicksort_beta( A2[:], 0, len(A2) - 1), '\n' )
+    #  Test for the Quicksort with tail recursion in P188.
+    print("Test for the Quicksort with tail recursion in P188: ", quicksort_tail(A2[:], 0, len(A2) - 1), '\n')
+
+
+
+
+
+
+
+
+
+
+
+
+        #  Test for the Quicksort with optimized tail recursion in P188.
+    print("Test for the Quicksort with optimized tail recursion in P188: ", quicksort_tail_opt(A2[:], 0, len(A2) - 1), '\n')
