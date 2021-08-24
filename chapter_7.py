@@ -168,6 +168,39 @@ def partition_beta(A, p, r):
 
 
 """
+The fixed partition algorithm used in Quicksort.
+It reduces the constant of the T(n) from 2 to 1 in comparison to partition_beta.
+Input @para: list A, the start & end index of A.
+Output @para: q & t, the list satisfies A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r].
+"""
+def partition_theta(A, p, r):
+
+    pivot = A[r]
+    q = p - 1
+    t = p - 1
+
+    for j in range(p, r):
+        #  When A[j] < pivot, q and t move to the right together since t always >= q.
+        if A[j] < pivot:
+            q += 1
+            t += 1
+            A[q], A[j] = A[j], A[q]
+            #  When q != t, the new A[q] takes the position where A[t] used to be,
+            #  Which means A[j] now is the old A[t], so we need to switch them back.
+            if q != t:
+                A[t], A[j] = A[j], A[t]
+        elif A[j] == pivot:
+            t += 1
+            A[t], A[j] = A[j], A[t]
+
+    t += 1
+    A[t], A[r] = A[r], A[t]
+
+    #  A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r]
+    return q, t
+
+
+"""
 The Quicksort beta using partition beta.
 When there are plenty of equal elements in the input,  Quicksort beta performs better.
 
@@ -182,7 +215,9 @@ def quicksort_beta(A, p, r):
 
     #  Divide A into 2 parts.
     #  A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r]
+    #  We can use q, t = partition_theta(A, p, r) as well.
     q, t = partition_beta(A, p, r)
+
     #  Recursively sort the 2 parts.
     hoare_quicksort( A, p, q - 1 )
     hoare_quicksort( A, t + 1, r )
@@ -284,16 +319,22 @@ if __name__ == "__main__":
 
     #  Test for Quicksort in P171.
     print("Test for Quicksort in P171: ", quicksort( A[:], 0, len(A) - 1) , '\n')
+
     #  Test for Randomized Quicksort in P179.
     print("Test for Randomized Quicksort in P179: ", randomized_quicksort( A[:], 0, len(A) - 1) , '\n')
+
     #  Test for Quicksort using Hoare-partition in P185.
     print("Test for Quicksort using Hoare-partition in P185: ", hoare_quicksort( A[:], 0, len(A) - 1), '\n')
+
     #  Test for the Quicksort with equal element values in P186.
-    print("Test for the Quicksort with equal element values in P186: ", quicksort_beta( A2[:], 0, len(A2) - 1), '\n' )
+    print("Test for the Quicksort with equal element values in P186: ", quicksort_beta(A2[:], 0, len(A2) - 1), '\n')
+
     #  Test for the Quicksort with tail recursion in P188.
     print("Test for the Quicksort with tail recursion in P188: ", quicksort_tail(A2[:], 0, len(A2) - 1), '\n')
+
     #  Test for the Quicksort with optimized tail recursion in P188.
     print("Test for the Quicksort with optimized tail recursion in P188: ", quicksort_tail_opt(A2[:], 0, len(A2) - 1), '\n')
+
     #  Test for fuzzysort in P189.
     print("Test for fuzzysort in P189: ", fuzzysort( intervals, 0, len(intervals) - 1 ),'\n')
 
