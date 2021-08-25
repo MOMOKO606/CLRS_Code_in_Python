@@ -185,8 +185,8 @@ def partition_theta(A, p, r):
             q += 1
             t += 1
             A[q], A[j] = A[j], A[q]
-            #  When q != t, the new A[q] takes the position where A[t] used to be,
-            #  Which means A[j] now is the old A[t], so we need to switch them back.
+            #  When q != t, the new A[q] takes the position where A[q + 1] ... A[t] used to be,
+            #  Which means A[j] now is the old element from A[q + 1] ... A[t], so we need to switch them back.
             if q != t:
                 A[t], A[j] = A[j], A[t]
         elif A[j] == pivot:
@@ -274,6 +274,9 @@ def quicksort_tail_opt(A, p, r):
     return A
 
 
+"""
+Interval(a, b) represents a range from a to b.
+"""
 class Interval():
 
     def __init__( self, start, end ):
@@ -284,29 +287,76 @@ class Interval():
         return str( [self.start, self.end] )
 
 
+"""
+The partition algorithm for fuzzysort.
+Input @para: list A, the start & end index of A.
+Output @para: q & t, the list satisfies A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r].
+"""
 def partition_4interval(A, p, r):
-    pivot = A[r]
-    i = p - 1
-    #  A[p,...,t - 1] < A[t] < A[t + 1, ..., r]
+
+    pivot = Interval(A[r].start, A[r].end)
+    #  Initialize q and t.
+    q = p - 1
+    t = p - 1
+
     for j in range(p, r):
-        if A[j].end < pivot.start or ( A[j].end >= pivot.start and A[j].start <= pivot.end ):
-            i += 1
-            A[i], A[j] = A[j], A[i]
-    q = i + 1
-    A[q], A[r] = A[r], A[q]
+        #  Interval j < interval pivot.
+        if A[j].end < pivot.start:
+            # Move q & t to the right together since t always >= q.
+            q += 1
+            t += 1
+            #  Exchange A[j] and A[q].
+            A[j], A[q] = A[q], A[j]
+            #  When q != t, the new A[q] takes the position where A[q + 1] ... A[t] used to be,
+            #  Which means A[j] now is the old element from A[q + 1] ... A[t], so we need to switch them back.
+            if q != t:
+                A[t], A[j] = A[j], A[t]
 
-    return q
+        #  Implicit A[j].end >= pivot.start.
+        #  Overlap condition: A[j].end >= pivot.start and A[j].start <= pivot.end.
+        elif A[j].start <= pivot.end:
+            #  Update the overlapped pattern.
+            pivot.start = max( A[j].start, pivot.start )
+            pivot.end = min(A[j].end, pivot.end)
+
+            t += 1
+            #  Exchange A[j] and A[t].
+            A[j], A[t] = A[t], A[j]
+    #  Move q to the first element that overlaps with A[r]
+    q += 1
+    #  Move A[r] to the correct position.
+    t += 1
+    A[r], A[t] = A[t], A[r]
+
+    return q, t
 
 
+"""
+Fuzzysort, sort intervals.
+The big problem is overlap pattern, for instance, a overlaps b, b overlaps c does not guarantee a overlaps c.
+So the ideas are: 
+(1) A[p, ..., q - 1] < A[q, .., t] overlaps the pivot < A[t + 1, ..., r]
+(2) cope with the  'a overlaps b, b overlaps c, a < c' by situation by narrowing the overlapped interval.
+
+Input @para: list A of class Inverval(s), the start & end index p & r of A.
+Output @para: the fuzzy sorted A[p, ..., r].
+"""
 def fuzzysort(A, p, r):
+
+    #  Implicits the base case: one or 0 element.
     if p < r:
-        q = partition_4interval(A, p, r)
+        #  Divide A into 2 parts.
+        #  A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r]
+        q, t = partition_4interval(A, p, r)
+
+        #  Recursively sort the 2 parts.
         fuzzysort(A, p, q - 1 )
-        fuzzysort(A, q + 1, r)
+        fuzzysort(A, t + 1, r)
+
     return A
 
 
-
+#  Drive code.
 if __name__ == "__main__":
 
     A = [2, 8, 7, 1, 3, 5, 6, 4]
