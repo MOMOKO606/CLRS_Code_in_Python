@@ -207,6 +207,45 @@ def counting_sort4mat( matrix, r ):
 
 
 """
+The counting sort for matrix.
+We compare the values in the rth column of the input matrix.
+But instead of sort the values in the rth column, we sort the entire rows.
+Input: matrix A and r represents the rth column.
+Output: the sorted matrix.
+"""
+def counting_sort4mat_range( matrix, low, high, r ):
+
+    n = high - low + 1
+    #  Get the columns of matrix.
+    d = len(matrix[0])
+
+    #  set the kth digits of the matrix as list A.
+    A = [matrix[i][r] for i in range(low, high + 1)]
+
+    #  Get the range of A.
+    k = max(A)
+    #  Initialize the empty auxiliary lists by size.
+    C = [0] * (k + 1)
+    B = [[0 for i in range(d)] for j in range(n)]
+
+    #  counting the times each element in A appears.
+    for i in range(n):
+        C[A[i]] += 1
+    #  Accumulate the counting.
+    for i in range(1, k + 1):
+        C[i] += C[i - 1]
+    #  The value in C now represents the sorted position of its index.
+    #  I know it's a bit silly and tricky, the indices of C now represents the original value in A.
+    #  So now we go through A to check every element and its related sorted position.
+    #  We go through A from right to left since we want the algorithm to be stable.
+    for i in range(high, low - 1, -1):
+        B[C[A[i - low]] - 1] = matrix[i]
+        #  Update the index.
+        C[A[i - low]] -= 1
+    return B
+
+
+"""
 Transfer a matrix of digits into a list of integers. 
 which means we combine the digits together.
 Input: the matrix and d = the columns of the matrix.
@@ -247,15 +286,96 @@ def radix_sort( A ):
     return A
 
 
+"""
+Rearrange the matrix by exchanging rows with dmax digits to matrix[start, ... ,j].
+matrix[j + 1, ... ,end] has smaller digits.
+Input @para: 
+matrix stored the number in matrix form split by digits 
+The rows of the matrix are from index start to index end, so we have (end - start + 1) numbers.
+dmax digits 
+Output: rearranged matrix and index j.
+"""
+def partition_matrix( matrix, start, end, dmax ):
+    #  Number of columns.
+    col = len(matrix[0])
+    j = start - 1
+    for i in range(start, end + 1):
+        if matrix[i][col - dmax] != 0:
+            j += 1
+            matrix[j], matrix[i] = matrix[i], matrix[j]
+    return matrix, j
+
+
+"""
+The recursive radix sort.
+Input @para: 
+matrix stored the number in matrix form split by digits 
+The rows of the matrix are from index start to index end, so we have (end - start + 1) numbers.
+The numbers can be divided into dmax digits maximum and dmin digits minimum.
+Output: matrix in decreasing order.
+"""
+def radix_sort_recur( matrix, start, end, dmin, dmax ):
+    #  We sort the matrix from large digits to small digits.
+    #  Implicit that the base case is dmin > dmax which means the end of the loop and return None
+    if dmin <= dmax:
+        #  Find the rows indices of number of digits dmax, and rearrange the matrix.
+        #  matrix[start,...,mid] have dmax digits.
+        matrix, mid = partition_matrix( matrix, start, end, dmax )
+        #  Sort the matrix[start,...,mid] with dmax digits by counting sort.
+        tmp1 = []
+        for j in range( len(matrix[0]) - 1, len(matrix[0]) - dmax - 1, -1):
+            tmp1 = counting_sort4mat_range(matrix, start, mid, j)
+        #  Recursively sort the matrix[mid + 1, ... , end] with smaller digits.
+        tmp2 = radix_sort_recur(matrix, mid + 1, end, dmin, dmax - 1)
+
+        #  Change the order, put tmp1 & tmp2 together and return.
+        tmp1.reverse()
+        if tmp2 is None:
+            return tmp1
+        else:
+            return tmp1 + tmp2
+
+
+"""
+Optimized radix sort.
+Reduce the number of loops by rearrange the numbers. 
+Number with the same digits should be put together.
+Numbers with less digits are smaller than those with more digits.
+Input: list A.
+Output: the sorted A.
+"""
+def radix_sort_opt( A ):
+
+    #  Find the smallest and the largest number of digits in A.
+    dmin = get_d_digits(min(A))
+    dmax = get_d_digits(max(A))
+
+    #  Transfer A into matrix of digits of A.
+    A_matrix = trans2digits(A, dmax)
+
+    #  Recursively sort A_matrix from low to high digits.
+    A_matrix = radix_sort_recur( A_matrix, 0, len(A_matrix) - 1, dmin, dmax )
+
+    #  Transfer the matrix of digits to a list of integers.
+    A = trans2list(A_matrix, dmax)
+    A.reverse()
+
+    return A
+
+
+
+
+
 #  Drive code
 if __name__ == "__main__":
 
-    #  Data collection.
+    #  Test data collection.
     A0 = [2, 5, 3, 0, 2, 3, 0, 3]
     A1 = [6, 0, 2, 0, 1, 3, 4, 6, 1, 3, 2]
     A2 = [329, 457, 657, 839, 436, 720, 355]
     A3 = [10000, 329, 9923, 457, 12, 657, 68, 839, 54921, 436, 2849, 720, 3, 355]
     A4 = ["COW", "DOG", "SEA", "RUG","ROW", "MOB", "BOX", "TAB", "BAR", "EAR", "TAR", "DIG", "BIG", "TEA", "NOW", "FOX"]
+    A5 = [4321, 399, 28, 5]
 
     #  Test for the classic counting sort in P195.
     print("Test for counting sort in P195: ", counting_sort(A1[:]), '\n')
@@ -265,5 +385,7 @@ if __name__ == "__main__":
     print("Test for the classic radix sort in P198: ", radix_sort( A3 ), '\n')
     #  Test for the radix sort of strings in P199.
     print("Test for the radix sort of strings in P199: ", radix_sort4words( A4, 3 ), '\n')
+    #  Test for the roptimized radix sort.
+    print("Test for the optimized radix sort: ", radix_sort_opt( A3[:] ), '\n')
 
 
