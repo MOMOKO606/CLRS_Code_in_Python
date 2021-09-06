@@ -1,4 +1,5 @@
 import random
+import chapter_7
 
 """
 The counting sort for non-negative numbers in Chapter 8 P195.
@@ -424,6 +425,33 @@ def waterjugs( R, B, red_p, red_r, blue_p, blue_r ):
     return R, B
 
 
+"""
+K-sort in problems 8-5 in P207.
+Every element satisfied A[i] <= A[i + k], O(nlg(n/k)).
+Input @para: list A and k.
+Output: the k-sorted A.
+"""
+def k_sort( A, k ):
+
+    #  Outer loop represents k sub-arrays need to be sorted.
+    for i in range(k):
+        #  Get each sub-array (A[i], A[i + k], ...) and quicksort it.
+        tmp = []
+        for j in range(i, len(A), k):
+            tmp.append(A[j])
+        tmp = chapter_7.quicksort(tmp, 0, len(tmp) - 1)
+        #  Put them back to their original positions in A
+        for j in range(len(tmp)):
+            A[i + j * k] = tmp[j]
+
+    return A
+
+
+
+
+
+
+
 
 
 #  Drive code
@@ -436,6 +464,7 @@ if __name__ == "__main__":
     A3 = [10000, 329, 9923, 457, 12, 657, 68, 839, 54921, 436, 2849, 720, 3, 355]
     A4 = ["COW", "DOG", "SEA", "RUG","ROW", "MOB", "BOX", "TAB", "BAR", "EAR", "TAR", "DIG", "BIG", "TEA", "NOW", "FOX"]
     A5 = [4321, 399, 28, 5]
+    A6 = [5, 10, 7, 2, 3, 1, 4, 9, 8, 6]
     R = [7, 6, 0, 4, 8, 3, 2, 1, 5]
     B = [4, 6, 1, 2, 0, 5, 8, 3, 7]
 
@@ -451,4 +480,6 @@ if __name__ == "__main__":
     print("Test for the optimized radix sort: ", radix_sort_opt( A3[:] ), '\n')
     #  Test for the problems 8-4 water jugs in P206.
     print("Test for the problems 8-4 water jugs in P206: ", waterjugs( R, B, 0, len(R) - 1 , 0, len(B) - 1 ), '\n')
+    #  Test for k-sort in P207.
+    print("Test for k-sort in P207: ", k_sort( A6[:], 2 ), '\n')
 
