@@ -1,3 +1,5 @@
+import random
+
 """
 The counting sort for non-negative numbers in Chapter 8 P195.
 Input: list A.
@@ -363,6 +365,61 @@ def radix_sort_opt( A ):
     return A
 
 
+"""
+"""
+def partition_by_pivot( A, p, r, pivot):
+    q = p - 1
+    t = p - 1
+    for i in range(p, r + 1):
+        if A[i] < pivot:
+            q += 1
+            t += 1
+            A[q], A[i] = A[i], A[q]
+            if q != t:
+                A[t], A[i] = A[i], A[t]
+        elif A[i] == pivot:
+            t += 1
+            A[t], A[i] = A[i], A[t]
+    return q, t
+
+
+"""
+Problems 8-4 in P207
+Suppose that you are given n red and n blue water jugs, all of different shapes and sizes. 
+All red jugs hold different amounts of water, as do the blue ones. 
+Moreover, for every red jug, there is a blue jug that holds the same amount of water, and vice versa.
+Your task is to find a grouping of the jugs into pairs of red and blue jugs that hold the same amount of water. 
+To do so, you may perform the following operation: pick a pair of jugs in which one is red and one is blue, 
+fill the red jug with water, and then pour the water into the blue jug. 
+This operation will tell you whether the red or the blue jug can hold more water, or that they have the same volume. 
+Assume that such a comparison takes one time unit. 
+Your goal is to find an algorithm that makes a minimum number of comparisons to determine the grouping. 
+Remember that you may not directly compare two red jugs or two blue jugs.
+
+Input @para: list R, its start index red_p and end index red_r. list B, its start index blue_p and end index blue_r. 
+Output: the identical R & B represent the matched water jugs.
+"""
+def waterjugs( R, B, red_p, red_r, blue_p, blue_r ):
+
+    #  Base case: when R & B both have 0 or 1 element we just return them.
+    if red_p >= red_r:
+        return R, B
+
+    #  Randomly choose a pivot from R.
+    k = random.randint(red_p, red_r)
+    #  Using the pivot of R to partition the jugs in B.
+    blue_q, blue_t = partition_by_pivot(B, blue_p, blue_r, R[k])
+    #  Using the pivot of B to partition the jugs in R.
+    red_q, red_t = partition_by_pivot(R, red_p, red_r, B[blue_t])
+
+    #  Divide-and-conquer.
+    #  Now we have matched the R[k] and B[blue_t].
+    #  Then, solve the left and right subparts of R & B.
+    R, B = waterjugs(R, B, red_p, red_q, blue_p, blue_q)
+    R, B = waterjugs(R, B, red_t + 1, red_r, blue_t + 1, blue_r)
+
+    return R, B
+
 
 
 
@@ -376,6 +433,8 @@ if __name__ == "__main__":
     A3 = [10000, 329, 9923, 457, 12, 657, 68, 839, 54921, 436, 2849, 720, 3, 355]
     A4 = ["COW", "DOG", "SEA", "RUG","ROW", "MOB", "BOX", "TAB", "BAR", "EAR", "TAR", "DIG", "BIG", "TEA", "NOW", "FOX"]
     A5 = [4321, 399, 28, 5]
+    R = [7, 6, 0, 4, 8, 3, 2, 1, 5]
+    B = [4, 6, 1, 2, 0, 5, 8, 3, 7]
 
     #  Test for the classic counting sort in P195.
     print("Test for counting sort in P195: ", counting_sort(A1[:]), '\n')
@@ -385,7 +444,8 @@ if __name__ == "__main__":
     print("Test for the classic radix sort in P198: ", radix_sort( A3 ), '\n')
     #  Test for the radix sort of strings in P199.
     print("Test for the radix sort of strings in P199: ", radix_sort4words( A4, 3 ), '\n')
-    #  Test for the roptimized radix sort.
+    #  Test for the optimized radix sort.
     print("Test for the optimized radix sort: ", radix_sort_opt( A3[:] ), '\n')
-
+    #  Test for the problems 8-4 water jugs in P206.
+    print("Test for the problems 8-4 water jugs in P206: ", waterjugs( R, B, 0, len(R) - 1 , 0, len(B) - 1 ), '\n')
 
