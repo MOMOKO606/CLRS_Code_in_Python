@@ -1,5 +1,6 @@
 import random
 import chapter_7
+import chapter_6
 
 """
 The counting sort for non-negative numbers in Chapter 8 P195.
@@ -447,7 +448,22 @@ def k_sort( A, k ):
     return A
 
 
-
+"""
+Sort a k-sorted array.
+Input @para: array A that already is a k-sorted array.
+Output: the sorted A.
+"""
+def sort_ksorted( A, k ):
+    #  Rearrange k-sorted A into k lists of matrix form.
+    matrix = []
+    for i in range( k ):
+        tmp = []
+        for j in range(i, len( A ), k):
+            tmp.append( A[j] )
+        matrix.append( tmp )
+    #  Use max-heap to merge k lists.
+    A = chapter_6.sort_klists( matrix, len(A) )
+    return A
 
 
 
@@ -482,4 +498,6 @@ if __name__ == "__main__":
     print("Test for the problems 8-4 water jugs in P206: ", waterjugs( R, B, 0, len(R) - 1 , 0, len(B) - 1 ), '\n')
     #  Test for k-sort in P207.
     print("Test for k-sort in P207: ", k_sort( A6[:], 2 ), '\n')
+    #  Test for sorting a k-sorted array in P207.
+    print("Test for sorting a k-sorted array in P207: ", sort_ksorted( k_sort( A6[:], 2 ), 2 ), '\n')
 
