@@ -366,6 +366,9 @@ def radix_sort_opt( A ):
 
 
 """
+The partition algorithm with given pivot.
+Input @para: list A, the start & end index of A, the pivot.
+Output @para: q & t, the list satisfies A[p, ..., q - 1] < A[q, .., t] = pivot < A[ t + 1, ..., r].
 """
 def partition_by_pivot( A, p, r, pivot):
     q = p - 1
