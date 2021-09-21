@@ -1,7 +1,39 @@
 import random
 
+
+"""
+Get the minimum and the maximum elements of A simultaneously.
+First we compare each elements in pairs, 
+then we search the possible minimum in the smaller elements in all pairs,
+search the possible maximum in the larger elements in all pairs.
+
+Input: list A.
+Output: the minimum & maximum elements in A.
+"""
 def min_max( A ):
-    pass
+    n = len(A)
+
+    #  Comparing in pairs.
+    for i in range(0, n - 1, 2):
+        if A[i] >= A[i + 1]:
+            A[i], A[i + 1] = A[i + 1], A[i]
+
+    #  Get the minimum.
+    Amin = float("inf")
+    for i in range(0, n, 2):
+        if A[i] < Amin:
+            Amin = A[i]
+
+    #  Get the maximum.
+    Amax = float("-inf")
+    for i in range(1, n, 2):
+        if A[i] > Amax:
+            Amax = A[i]
+
+    return Amin, Amax
+
+
+
 
 
 
@@ -17,6 +49,6 @@ if __name__ == "__main__":
     A6 = [5, 10, 7, 2, 3, 1, 4, 9, 8, 6]
 
 
-    #  Test for the classic counting sort in P195.
-    print("Test for counting sort in P195: ", counting_sort(A1[:]), '\n')
+    #  Test for the simultaneous minimum and maximum algorithm in P214.
+    print("Test for the simultaneous minimum and maximum algorithm in P214: ",min_max( A3 ), '\n')
     #  Test for how many of the n integers fall into a range [a, b] of 8.2-4 in P197.
