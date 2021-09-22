@@ -33,7 +33,45 @@ def min_max( A ):
     return Amin, Amax
 
 
+"""
+Select the ith largest element in array A.
+Input @para: list A, start index p and end index r, i means ith largest element.
+Output: the ith largest element in array A[p,...,r]
+"""
+def select_recur( A, p, r, i ):
 
+    #  Randomized partition in Quicksort.
+    def random_partition(A, p, r):
+
+        #  The classic partition in Quicksort.
+        def partition(A, p, r):
+            j = p - 1
+            for i in range(p, r):
+                if A[i] <= A[r]:
+                    j += 1
+                    A[j], A[i] = A[i], A[j]
+            A[j + 1], A[r] = A[r], A[j + 1]
+            return j + 1
+        #  Choosing the pivot randomly.
+        j = random.randint( p, r )
+        A[j], A[r] = A[r], A[j]
+        return partition(A, p, r)
+
+    #  Partition list A randomly, then search ith element in which subarray of A.
+    q = random_partition(A, p, r)
+    #  Transfer index q to kth.
+    k = q - p + 1
+
+    #  Base case.
+    if k == i:
+        return A[q]
+    #  ith element must be in the left subarray.
+    if i < k:
+        return select_recur( A, p, q - 1, i)
+    #  when i > k, ith element must be in the right subarray.
+    #  Notice, when go to the right subarray, i need to do some computation.
+    else:
+        return select_recur( A, q + 1, r, i - k)
 
 
 
@@ -50,5 +88,6 @@ if __name__ == "__main__":
 
 
     #  Test for the simultaneous minimum and maximum algorithm in P214.
-    print("Test for the simultaneous minimum and maximum algorithm in P214: ",min_max( A3 ), '\n')
-    #  Test for how many of the n integers fall into a range [a, b] of 8.2-4 in P197.
+    print("Test for the simultaneous minimum and maximum algorithm in P214: ", min_max( A3 ), '\n')
+    #  Test for recursive select in P216.
+    print("Test for recursive select in P216: ", select_recur( A2[:], 0, len(A2) - 1, 3 ), '\n')
