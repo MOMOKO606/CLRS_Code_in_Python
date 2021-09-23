@@ -33,29 +33,30 @@ def min_max( A ):
     return Amin, Amax
 
 
+#  Randomized partition in Quicksort.
+def random_partition(A, p, r):
+
+    #  The classic partition in Quicksort.
+    def partition(A, p, r):
+        j = p - 1
+        for i in range(p, r):
+            if A[i] <= A[r]:
+                j += 1
+                A[j], A[i] = A[i], A[j]
+        A[j + 1], A[r] = A[r], A[j + 1]
+        return j + 1
+    #  Choosing the pivot randomly.
+    j = random.randint( p, r )
+    A[j], A[r] = A[r], A[j]
+    return partition(A, p, r)
+
+
 """
 Select the ith largest element in array A.
 Input @para: list A, start index p and end index r, i means ith largest element.
 Output: the ith largest element in array A[p,...,r]
 """
 def select_recur( A, p, r, i ):
-
-    #  Randomized partition in Quicksort.
-    def random_partition(A, p, r):
-
-        #  The classic partition in Quicksort.
-        def partition(A, p, r):
-            j = p - 1
-            for i in range(p, r):
-                if A[i] <= A[r]:
-                    j += 1
-                    A[j], A[i] = A[i], A[j]
-            A[j + 1], A[r] = A[r], A[j + 1]
-            return j + 1
-        #  Choosing the pivot randomly.
-        j = random.randint( p, r )
-        A[j], A[r] = A[r], A[j]
-        return partition(A, p, r)
 
     #  Partition list A randomly, then search ith element in which subarray of A.
     q = random_partition(A, p, r)
@@ -72,6 +73,26 @@ def select_recur( A, p, r, i ):
     #  Notice, when go to the right subarray, i need to do some computation.
     else:
         return select_recur( A, q + 1, r, i - k)
+
+
+def select_iter(A, i):
+    n = len(A)
+    p = 0
+    r = n - 1
+    assert i <= n, "i must be less than or equal to n."
+    while True:
+        #  Partition list A randomly, then search ith element in which subarray of A.
+        q = random_partition(A, p, r)
+        #  Transfer index q to kth.
+        k = q - p + 1
+        if i == k:
+            return A[q]
+        elif i < k:
+            r = q - 1
+        else:
+            p = q + 1
+            i = i - k
+
 
 
 
@@ -91,3 +112,5 @@ if __name__ == "__main__":
     print("Test for the simultaneous minimum and maximum algorithm in P214: ", min_max( A3 ), '\n')
     #  Test for recursive select in P216.
     print("Test for recursive select in P216: ", select_recur( A2[:], 0, len(A2) - 1, 3 ), '\n')
+    #  Test for iterative select in 9.2-3 P219.
+    print("Test for iterative select in 9.2-3 P219: ", select_iter(A2[:], 3), '\n')
