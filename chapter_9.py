@@ -186,6 +186,51 @@ def kclosest( A, k ):
     return res
 
 
+"""
+Get the median of array X and array y, X & Y are already sorted.
+Input @para: the sorted array X[xp, ..., xr], the sorted array Y[yp, ..., yr]
+Output: the median of X and Y.
+"""
+def get_median( X, xp, xr, Y, yp, yr ):
+
+    #  Base case1: if the total length of X & Y == 2, we find the median of the two.
+    xn = xr - xp + 1
+    yn = yr - yp + 1
+    if xn + yn == 2:
+        return min( X[xp], Y[yp] )
+
+    #  The index / position of median in X.
+    xq = (xp + xr) // 2
+    #  The index / position of median in Y.
+    yq = (yp + yr) // 2
+
+    #  Divide:
+    #  We move to the right part of X & left part of Y.
+    if X[xq] < Y[yq]:
+        #  When X & Y has even numbers of elements each,
+        #  The X median is not inclusive, the Y median is inclusive.
+        #  The idea is simple, the median of X must belong to the left part of the total median.
+        #  Therefore, X median is not inclusive, since it never will be the possible total median.
+        #  The Y median is inclusive because we use lower median.
+        if xn % 2 == 0:
+            return get_median( X, xq + 1, xr, Y, yp, yq )
+        #  When X & Y has odd numbers of elements each,
+        #  Both median in X & Y are inclusive.
+        else:
+            return get_median( X, xq, xr, Y, yp, yq )
+    #  Y[yq] < X[xq]
+    #  vise versa.
+    else:
+        if xn % 2 == 0:
+            return get_median( X, xp, xq, Y, yq + 1, yr )
+        else:
+            return get_median( X, xp, xq, Y, yq, yr )
+
+
+
+
+
+
 #  Drive code
 if __name__ == "__main__":
     #  Test data collection.
@@ -196,6 +241,8 @@ if __name__ == "__main__":
     A5 = [4321, 399, 28, 5]
     A6 = [5, 10, 7, 2, 3, 1, 4, 9, 8, 6]
     A7 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    A8 = [2, 4, 6, 8, 10, 12]
+    A9 = [1, 3, 5, 7, 9, 11]
 
     #  Test for the simultaneous minimum and maximum algorithm in P214.
     print("Test for the simultaneous minimum and maximum algorithm in P214: ", min_max(A3), '\n')
@@ -207,3 +254,5 @@ if __name__ == "__main__":
     print("Test for the k-quantiles in 9.3-6 P223: ", kquantiles(A7[:], 0, len(A7) - 1, 5), '\n')
     #  Test for the k closest elements to median in 9.3-7 P223.
     print("Test for the k closest to median func in 9.3-7 P223: ", kclosest(A6[:], 4), '\n')
+    #  Test for find the median in X & Y in 9.3-8 P223.
+    print("Test for find the median in X & Y in 9.3-8 P223: ", get_median( A8, 0, len(A8) - 1, A9, 0, len(A9) - 1 ), '\n')
