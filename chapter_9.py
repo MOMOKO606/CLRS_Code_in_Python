@@ -15,8 +15,6 @@ search the possible maximum in the larger elements in all pairs.
 Input: list A.
 Output: the minimum & maximum elements in A.
 """
-
-
 def min_max(A):
     n = len(A)
 
@@ -64,8 +62,6 @@ Select the ith largest element in array A recursively.
 Input @para: list A, start index p and end index r, i means ith largest element.
 Output: the ith largest element in array A[p,...,r] and its index.
 """
-
-
 def select_recur(A, p, r, i):
     #  Partition list A randomly, then search ith element in which subarray of A.
     q = random_partition(A, p, r)
@@ -90,8 +86,6 @@ Select the ith largest element in array A iteratively.
 Input @para: list A, i means ith largest element.
 Output: the ith largest element in array A[p,...,r]
 """
-
-
 def select_iter(A, i):
     n = len(A)
     p = 0
@@ -121,8 +115,6 @@ divide the sorted set into k equal-sized sets (to within 1).
 Input @para: list A, p & r are indices of A that A[p,...,r], k means split the array into k segments.
 Output @para: the k - 1 quantiles.
 """
-
-
 def kquantiles(A, p, r, k):
     #  Set sentinel.
     assert k > 1, "It's meaningless otherwise."
