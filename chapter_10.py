@@ -56,6 +56,24 @@ class Stack:
         return str(S[:top + 1])
 
 
+class Queue():
+
+    def __init__(self):
+        self.Q = [None]
+        self.head = 0
+        self.tail = 0
+
+
+
+
+
+    def __str__(self):
+        Q = self.Q
+        head = self.head
+        tail = self.tail
+
+        return str( Q[head : tail] )
+
 
 
 
