@@ -227,6 +227,32 @@ def get_median( X, xp, xr, Y, yp, yr ):
             return get_median( X, xp, xq, Y, yq, yr )
 
 
+"""
+Compute the weighted median of array A.
+Input @para: A[p,...,r], the original leftkey and rightkey are both 0.5 according to the definition.
+Output: the weighted median of A.
+"""
+def weighted_median( A, p, r, leftkey, rightkey ):
+
+    #  We find the median and its index first.
+    median, mindex = select_recur( A, p, r, math.ceil( (r - p + 1)/2 ) )
+
+    #  Get the sum of left & right weight.
+    left = sum( A[p:mindex])
+    right = sum( A[mindex + 1:r + 1] )
+
+    #  Base case: the median is the weighted median.
+    if left < leftkey and right <= rightkey:
+        return median
+    #  Divide
+    #  if the weighted median is in the right part.
+    #  NOTICE: remember to update the left key in the recursive call.
+    if left < leftkey and right > rightkey:
+        return weighted_median(A, mindex + 1, r, leftkey - left - median, rightkey)
+    #  if the weighted median is in the left part.
+    #  NOTICE: remember to update the right key in the recursive call.
+    else:
+        return weighted_median(A, p, mindex - 1, leftkey, rightkey - right - median)
 
 
 
@@ -243,6 +269,7 @@ if __name__ == "__main__":
     A7 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     A8 = [2, 4, 6, 8, 10, 12]
     A9 = [1, 3, 5, 7, 9, 11]
+    A10 = [0.1, 0.35, 0.05, 0.1, 0.15, 0.05, 0.2]
 
     #  Test for the simultaneous minimum and maximum algorithm in P214.
     print("Test for the simultaneous minimum and maximum algorithm in P214: ", min_max(A3), '\n')
@@ -256,3 +283,5 @@ if __name__ == "__main__":
     print("Test for the k closest to median func in 9.3-7 P223: ", kclosest(A6[:], 4), '\n')
     #  Test for find the median in X & Y in 9.3-8 P223.
     print("Test for find the median in X & Y in 9.3-8 P223: ", get_median( A8, 0, len(A8) - 1, A9, 0, len(A9) - 1 ), '\n')
+    #  Test for the weighted median in problems 9-2 P225.
+    print("Test for the weighted median in problems 9-2 P225: ", weighted_median(A10, 0, len(A10) - 1, 0.5, 0.5), '\n')
